@@ -15,20 +15,30 @@ INSERT INTO `package_to_optional`(`package_id`,`optional`)
 	VALUES(1,'optional1');
 INSERT INTO `package_to_optional`(`package_id`,`optional`)
 	VALUES(1,'optional2');
+INSERT INTO `package_to_optional`(`package_id`,`optional`)
+	VALUES(2,'optional1');
     
 INSERT INTO `validity_period`(`package_id`,`months`,`monthly_fee`)
 	VALUES(1,12,19.99);
+INSERT INTO `validity_period`(`package_id`,`months`,`monthly_fee`)
+	VALUES(2,24,39.99);
     
 INSERT INTO `order`(`creation_time`,`activation_date`,`total`,`months`,`user`,`package_id`)
-	VALUES(CURRENT_TIMESTAMP(),'2022-01-01',150,12,'user',1);
+	VALUES(CURRENT_TIMESTAMP(),'2023-01-01',150,12,'user',1);
+INSERT INTO `order`(`creation_time`,`activation_date`,`total`,`months`,`user`,`package_id`)
+	VALUES(CURRENT_TIMESTAMP(),'2023-02-01',150,12,'user',1);
     
 INSERT INTO `order_to_optional`(`order_id`,`optional`)
 	VALUES(1,'optional1');
 INSERT INTO `order_to_optional`(`order_id`,`optional`)
 	VALUES(1,'optional2');
+INSERT INTO `order_to_optional`(`order_id`,`optional`)
+	VALUES(2,'optional1');
 
+UPDATE `order` SET `accepted` = 0 WHERE `id` = 1;
 UPDATE `order` SET `accepted` = 1 WHERE `id` = 1;
-    
+UPDATE `order` SET `accepted` = 1 WHERE `id` = 2;
+
 SELECT *
 FROM `user`;
 SELECT *
@@ -38,10 +48,22 @@ FROM `package`;
 SELECT *
 FROM `package_to_optional`;
 SELECT *
+FROM `order_to_optional`;
+SELECT *
 FROM `validity_period`;
 SELECT *
 FROM `order`;
 SELECT *
+FROM `suspended_order`;
+SELECT *
+FROM `activation_schedule`;
+SELECT *
+FROM `schedule_to_optional`;
+SELECT *
+FROM `insolvent_user`;
+SELECT *
 FROM `package_sales`;
 SELECT *
-FROM `order_to_optional`;
+FROM `validity_period_sales`;
+SELECT *
+FROM `optional_sales`;

@@ -205,8 +205,8 @@ CREATE TABLE `package_sales` (
 );
 
 
-DROP TABLE IF EXISTS `validty_period_sales`;
-CREATE TABLE `validty_period_sales` (
+DROP TABLE IF EXISTS `validity_period_sales`;
+CREATE TABLE `validity_period_sales` (
 	`package_id` int NOT NULL,
     `months` int NOT NULL,
     `monthly_fee` decimal(5,2) NOT NULL,
@@ -228,8 +228,8 @@ CREATE TABLE `optional_sales` (
 );
 
 
-DROP TABLE IF EXISTS `insolvent_users`;
-CREATE TABLE `insolvent_users` (
+DROP TABLE IF EXISTS `insolvent_user`;
+CREATE TABLE `insolvent_user` (
 	`user` varchar(30) NOT NULL,
     `email` varchar(30) NOT NULL,
     `failed_payments` smallint NOT NULL,
@@ -239,19 +239,14 @@ CREATE TABLE `insolvent_users` (
 );
 
 
-DROP TABLE IF EXISTS `suspended_orders`;
-CREATE TABLE `suspended_orders` (
+DROP TABLE IF EXISTS `suspended_order`;
+CREATE TABLE `suspended_order` (
 	`id` int NOT NULL,
     `user` varchar(30) NOT NULL,
     `total` int NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`id`) REFERENCES `order`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CHECK (`total` > 0)
-);
-
-DROP TABLE IF EXISTS `check`;
-CREATE TABLE `check` (
-    `value` varchar(30) NOT NULL
 );
 
 
