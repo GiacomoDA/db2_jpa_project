@@ -10,7 +10,7 @@ INSERT INTO `package`(`name`)
 	VALUES('package1');    
 INSERT INTO `package`(`name`)
 	VALUES('package2');
-    
+
 INSERT INTO `package_to_optional`(`package_id`,`optional`)
 	VALUES(1,'optional1');
 INSERT INTO `package_to_optional`(`package_id`,`optional`)
@@ -27,6 +27,8 @@ INSERT INTO `order`(`creation_time`,`activation_date`,`total`,`months`,`user`,`p
 	VALUES(CURRENT_TIMESTAMP(),'2023-01-01',150,12,'user',1);
 INSERT INTO `order`(`creation_time`,`activation_date`,`total`,`months`,`user`,`package_id`)
 	VALUES(CURRENT_TIMESTAMP(),'2023-02-01',150,12,'user',1);
+INSERT INTO `order`(`creation_time`,`activation_date`,`total`,`months`,`user`,`package_id`)
+	VALUES(CURRENT_TIMESTAMP(),'2023-03-01',350,12,'user',1);
     
 INSERT INTO `order_to_optional`(`order_id`,`optional`)
 	VALUES(1,'optional1');
@@ -36,6 +38,8 @@ INSERT INTO `order_to_optional`(`order_id`,`optional`)
 	VALUES(2,'optional1');
 
 UPDATE `order` SET `accepted` = 0 WHERE `id` = 1;
+UPDATE `order` SET `accepted` = 0 WHERE `id` = 2;
+UPDATE `order` SET `accepted` = 0 WHERE `id` = 3;
 UPDATE `order` SET `accepted` = 1 WHERE `id` = 1;
 UPDATE `order` SET `accepted` = 1 WHERE `id` = 2;
 
@@ -59,6 +63,8 @@ SELECT *
 FROM `activation_schedule`;
 SELECT *
 FROM `schedule_to_optional`;
+SELECT *
+FROM `auditing_table`;
 SELECT *
 FROM `insolvent_user`;
 SELECT *

@@ -176,12 +176,12 @@ CREATE TABLE `schedule_to_optional` (
 );
 
 
-DROP TABLE IF EXISTS `auduting_table`;
-CREATE TABLE `auduting_table` (
+DROP TABLE IF EXISTS `auditing_table`;
+CREATE TABLE `auditing_table` (
     `user` varchar(30) NOT NULL,
 	`email` varchar(30) NOT NULL,
     `amount` int NOT NULL,
-    `last_order` datetime NOT NULL,
+    `last_rejection` datetime NOT NULL,
     PRIMARY KEY (`user`),
     FOREIGN KEY (`user`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
 );

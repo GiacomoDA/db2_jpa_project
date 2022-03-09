@@ -1,0 +1,11 @@
+update_package_sales: when an order is accepted update the sales relative to the sold package
+update_period_sales: when an order is accepted update the sales relative to the sold package's validity period
+update_optional_sales: when an order is accepted update the sales relative to the sold optionals
+order_accepted: when an order state goes from refused to accepted, decrease the failed_payments attribute of the user that
+	placed the order and delete the order from the list of suspended orders
+order_refused: when an order is refused, increase the failed_payments attribute of the user that placed the order and
+	add the order to the list of suspended orders
+create_activation_schedule: when an order is accepted create the corresponding activation schedule entry and
+	relative entries in the schedule_to_optional bridge table
+update_insolvent_user: depending on the old and the new values of the attribute failed_payments in the user table
+	update the insolvent_user table accordingly
