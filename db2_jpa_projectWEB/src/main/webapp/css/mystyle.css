@@ -1,0 +1,71 @@
+table, th, td {
+  border-collapse: collapse;
+  border: 1px solid #ffffff;
+}
+
+table, td {
+  padding: 5px 10px 5px 10px;
+  text-align: left;
+}
+
+th {
+  padding: 8px 10px 8px 10px;
+  text-align: center;
+}
+
+body {
+  background: var(--body-bg);
+  color: var(--body-color);
+  margin: 20px 40px 0px 40px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+input, select {
+  background-color: #F8F8F8;
+  color: #282828;
+  margin: 5px 0px 10px 0px;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 2px;
+}
+
+button, input[type=submit] {
+  background-color: #F8F8F8;
+  color: #282828;
+  margin: 5px 0px 10px 0px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 2px;
+  text-align: center;
+  display: inline-block;
+  transition-duration: 0.3s;
+}
+
+button:hover, input[type=submit]:hover {
+  background-color: #BEBEBE;
+}
+
+.right {
+  text-align: right;
+}
+
+.sideBySide{
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 60px;
+  margin-bottom: 40px;
+}
+
+/* Light mode */
+:root {
+  --body-bg: #FFFFFF;
+  --body-color: #000000;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+      --body-bg: #282828;
+      --body-color: #F8F8F8;
+  }
+}

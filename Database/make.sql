@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS `db_telco_project`;
-CREATE DATABASE IF NOT EXISTS `db_telco_project`;
-USE `db_telco_project`;
+DROP DATABASE IF EXISTS `db2_jpa_project`;
+CREATE DATABASE IF NOT EXISTS `db2_jpa_project`;
+USE `db2_jpa_project`;
 
 SET FOREIGN_KEY_CHECKS=0;
 SET UNIQUE_CHECKS=0;
@@ -91,21 +91,12 @@ CREATE TABLE `order_to_optional` (
 );
 
 
-DROP TABLE IF EXISTS `service`;
-CREATE TABLE `service` (
-    `id` int NOT NULL AUTO_INCREMENT,
-	`package_id` int NOT NULL,
-    PRIMARY KEY (`id`, `package_id`),
-    FOREIGN KEY (`package_id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-); 
-
-
 DROP TABLE IF EXISTS `fixed_phone`;
 CREATE TABLE `fixed_phone` (
     `id` int NOT NULL AUTO_INCREMENT,
 	`package_id` int NOT NULL,
-    PRIMARY KEY (`id`, `package_id`),
-    FOREIGN KEY (`id`,`package_id`) REFERENCES `service` (`id`,`package_id`) ON DELETE CASCADE ON UPDATE CASCADE
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ); 
 
 
@@ -117,8 +108,8 @@ CREATE TABLE `mobile_phone` (
     `sms` smallint NOT NULL,
     `minutes_fee` decimal(5,2) NOT NULL,
     `sms_fee` decimal(5,2) NOT NULL,
-    PRIMARY KEY (`id`, `package_id`),
-    FOREIGN KEY (`id`,`package_id`) REFERENCES `service` (`id`,`package_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CHECK (`minutes` >= 0),
     CHECK (`sms` >= 0),
     CHECK (`minutes_fee` >= 0.00),
@@ -132,8 +123,8 @@ CREATE TABLE `fixed_internet` (
 	`package_id` int NOT NULL,
     `gigabytes` smallint NOT NULL,
     `gigabytes_fee` decimal(5,2) NOT NULL,
-    PRIMARY KEY (`id`, `package_id`),
-    FOREIGN KEY (`id`,`package_id`) REFERENCES `service` (`id`,`package_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CHECK (`gigabytes` >= 0),
     CHECK (`gigabytes_fee` >= 0.00)
 ); 
@@ -145,8 +136,8 @@ CREATE TABLE `mobile_internet` (
 	`package_id` int NOT NULL,
     `gigabytes` smallint NOT NULL,
     `gigabytes_fee` decimal(5,2) NOT NULL,
-    PRIMARY KEY (`id`, `package_id`),
-    FOREIGN KEY (`id`,`package_id`) REFERENCES `service` (`id`,`package_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CHECK (`gigabytes` >= 0),
     CHECK (`gigabytes_fee` >= 0.00)
 );
