@@ -16,6 +16,11 @@ public class Optional implements Serializable {
 	private int monthlyFee;
 	
 	public Optional() {
+	}	
+
+	public Optional(String name, int monthlyFee) {
+		this.name = name;
+		this.monthlyFee = monthlyFee;
 	}
 
 	public String getName() {

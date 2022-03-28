@@ -34,9 +34,9 @@ public class Order implements Serializable {
 	@JoinColumn(name = "user")
 	private User user;
 
-	/*@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id")
-	private Package package_id;*/
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "package_id")
+	private Package servicePackage;
 	
 	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
 	@JoinTable(name = "order_to_optional", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "optional"))
@@ -101,13 +101,13 @@ public class Order implements Serializable {
 		this.user = user;
 	}
 
-	/*public Package getPackage_id() {
-		return package_id;
+	public Package getServicePackage() {
+		return servicePackage;
 	}
 
-	public void setPackage_id(Package package_id) {
-		this.package_id = package_id;
-	}*/
+	public void setServicePackage(Package servicePackage) {
+		this.servicePackage = servicePackage;
+	}
 
 	public List<Optional> getOptionals() {
 		return optionals;

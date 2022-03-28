@@ -93,23 +93,21 @@ CREATE TABLE `order_to_optional` (
 
 DROP TABLE IF EXISTS `fixed_phone`;
 CREATE TABLE `fixed_phone` (
-    `id` int NOT NULL AUTO_INCREMENT,
 	`package_id` int NOT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    PRIMARY KEY (`package_id`),
+    FOREIGN KEY (`package_id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ); 
 
 
 DROP TABLE IF EXISTS `mobile_phone`;
 CREATE TABLE `mobile_phone` (
-    `id` int NOT NULL AUTO_INCREMENT,
 	`package_id` int NOT NULL,
     `minutes` smallint NOT NULL,
     `sms` smallint NOT NULL,
     `minutes_fee` decimal(5,2) NOT NULL,
     `sms_fee` decimal(5,2) NOT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (`package_id`),
+    FOREIGN KEY (`package_id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CHECK (`minutes` >= 0),
     CHECK (`sms` >= 0),
     CHECK (`minutes_fee` >= 0.00),
@@ -119,12 +117,11 @@ CREATE TABLE `mobile_phone` (
 
 DROP TABLE IF EXISTS `fixed_internet`;
 CREATE TABLE `fixed_internet` (
-    `id` int NOT NULL AUTO_INCREMENT,
 	`package_id` int NOT NULL,
     `gigabytes` smallint NOT NULL,
     `gigabytes_fee` decimal(5,2) NOT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (`package_id`),
+    FOREIGN KEY (`package_id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CHECK (`gigabytes` >= 0),
     CHECK (`gigabytes_fee` >= 0.00)
 ); 
@@ -132,12 +129,11 @@ CREATE TABLE `fixed_internet` (
 
 DROP TABLE IF EXISTS `mobile_internet`;
 CREATE TABLE `mobile_internet` (
-    `id` int NOT NULL AUTO_INCREMENT,
 	`package_id` int NOT NULL,
     `gigabytes` smallint NOT NULL,
     `gigabytes_fee` decimal(5,2) NOT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (`package_id`),
+    FOREIGN KEY (`package_id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CHECK (`gigabytes` >= 0),
     CHECK (`gigabytes_fee` >= 0.00)
 );

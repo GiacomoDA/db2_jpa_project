@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "user", schema = "db2_jpa_project")
-//@NamedQuery(name = "User.checkCredentials", query = "SELECT u FROM User u  WHERE u.username = ?1 and u.password = ?2")
+@NamedQuery(name = "User.checkCredentials", query = "SELECT u FROM User u  WHERE u.username = ?1 and u.password = ?2")
 
 public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -27,6 +27,13 @@ public class User implements Serializable {
 	private List<Order> orders;
 
 	public User() {
+	}
+	
+	public User(String username, String email, String password) {
+		this.username = username;
+		this.email = email;
+		this.password = password;
+		this.failedPayments = 0;
 	}
 
 	public String getUsername() {

@@ -15,19 +15,21 @@
 
 	<div class="sideBySide">
 		<h3>Login</h3>
-		<form action="..." method="POST">
+		<form action="Login" method="POST">
 			<label>Username</label><br>
 			<input type="text" name="username" required> <br>
 			<label>Password</label><br>
 			<input type="password" name="password" required><br><br>
 			<input type="submit" value="Login">
-			<p th:text=" ${errorMsg}"></p>
+			<div class="errorMessage">
+				<p style="font-size:small" th:text="${errorMessageLogin}"></p>
+			</div>
 		</form>
 	</div>
 
 	<div class="sideBySide">
 		<h3>Register</h3>
-		<form action="..." method="POST">
+		<form action="Register" method="POST">
 			<label>Username</label><br>
 			<input type="text" name="username" required> <br>
 			<label>E-mail address</label><br>
@@ -35,7 +37,9 @@
 			<label>Password</label><br>
 			<input type="password" name="password" required><br><br>
 			<input type="submit" value="Register">
-			<p th:text=" ${errorMsg}"></p>
+			<div class="errorMessage">
+				<p style="font-size:small" th:text="${errorMessageRegister}"></p>
+			</div>
 		</form>
 	</div>
 
