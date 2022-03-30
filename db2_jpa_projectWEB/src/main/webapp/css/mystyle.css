@@ -5,7 +5,7 @@ table, th, td {
 
 table, td {
   padding: 5px 10px 5px 10px;
-  text-align: left;
+  text-align: center;
 }
 
 th {
@@ -57,7 +57,7 @@ button:hover, input[type=submit]:hover {
 }
 
 .errorMessage{
-	font-size: 50%;
+	font-size: 80%;
 }
 
 /* Light mode */

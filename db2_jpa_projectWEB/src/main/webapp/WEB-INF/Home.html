@@ -1,0 +1,40 @@
+<!DOCTYPE html>	
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Home</title>
+<link rel="stylesheet" type="text/css" media="all"
+	href="/CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
+</head>
+<body>
+	<div class="right">
+		<a th:href="@{/Home}">Home</a>
+	</div>
+	
+	<h1>Available packages</h1>
+	
+	<table>
+		<thead>
+			<tr>
+				<th>Package</th>
+				<th>Phone</th>
+				<th>Mobile Phone</th>
+				<th>Internet</th>
+				<th>Mobile Internet</th>
+				<th>Optionals</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="p : ${packages}">
+				<td th:text="${p.name}"></td>
+				<td th:text="${p.hasFixedPhone()} ? 'Y' : 'N'"></td>
+				<td th:text="${p.getMobilePhone()} ? 'Y' : 'N'"></td>
+				<td th:text="${p.getFixedInternet()} ? 'Y' : 'N'"></td>
+				<td th:text="${p.getMobileInternet()} ? 'Y' : 'N'"></td>
+				<td th:text="${p.getOptionals().size()}"></td>
+			</tr>
+		</tbody>
+	</table>
+
+</body>
+</html>

@@ -38,6 +38,7 @@ DROP TABLE IF EXISTS `package`;
 CREATE TABLE `package` (
 	`id` int NOT NULL AUTO_INCREMENT,
     `name` varchar(30) NOT NULL,
+    `fixed_phone` bit NOT NULL,
     PRIMARY KEY (`id`)
 );
 
@@ -89,14 +90,6 @@ CREATE TABLE `order_to_optional` (
     FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`optional`) REFERENCES `optional` (`name`) ON DELETE CASCADE ON UPDATE CASCADE
 );
-
-
-DROP TABLE IF EXISTS `fixed_phone`;
-CREATE TABLE `fixed_phone` (
-	`package_id` int NOT NULL,
-    PRIMARY KEY (`package_id`),
-    FOREIGN KEY (`package_id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-); 
 
 
 DROP TABLE IF EXISTS `mobile_phone`;

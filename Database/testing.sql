@@ -6,10 +6,10 @@ INSERT INTO `optional`(`name`,`monthly_fee`)
 INSERT INTO `optional`(`name`,`monthly_fee`)
 	VALUES('optional2',20.00);
     
-INSERT INTO `package`(`name`)
-	VALUES('package1');    
-INSERT INTO `package`(`name`)
-	VALUES('package2');
+INSERT INTO `package`(`name`,`fixed_phone`)
+	VALUES('package1',TRUE);    
+INSERT INTO `package`(`name`,`fixed_phone`)
+	VALUES('package2',FALSE);
 
 INSERT INTO `package_to_optional`(`package_id`,`optional`)
 	VALUES(1,'optional1');

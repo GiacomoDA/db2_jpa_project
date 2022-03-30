@@ -8,9 +8,9 @@ import javax.persistence.*;
 
 public class MobilePhone implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "package_id")
 	private Package servicePackage;
 	

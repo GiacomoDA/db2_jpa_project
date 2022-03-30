@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "package", schema = "db2_jpa_project")
+@NamedQuery(name = "Package.findAll", query = "SELECT p FROM Package p")
 
 public class Package implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -17,7 +18,19 @@ public class Package implements Serializable {
 
 	private String name;
 	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "servicePackage", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
+	@Column(name = "fixed_phone")
+	private Boolean fixedPhone;
+
+	@OneToOne(fetch = FetchType.EAGER, mappedBy = "servicePackage")
+	private MobilePhone mobilePhone;
+
+	@OneToOne(fetch = FetchType.EAGER, mappedBy = "servicePackage")
+	private FixedInternet fixedInternet;
+	
+	@OneToOne(fetch = FetchType.EAGER, mappedBy = "servicePackage")
+	private MobileInternet mobileInternet;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "servicePackage", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
 	@OrderBy("months ASC")
 	private List<ValidityPeriod> validityPeriods;
 	
@@ -28,48 +41,47 @@ public class Package implements Serializable {
 	public Package() {
 	}
 
-	public Package(String name) {
+	public Package(String name, Boolean fixedPhone, MobilePhone mobilePhone, FixedInternet fixedInternet,
+			MobileInternet mobiletInternet, List<ValidityPeriod> validityPeriods, List<Optional> optionals) {
 		this.name = name;
+		this.fixedPhone = fixedPhone;
+		this.mobilePhone = mobilePhone;
+		this.fixedInternet = fixedInternet;
+		this.mobileInternet = mobiletInternet;
+		this.validityPeriods = validityPeriods;
+		this.optionals = optionals;
 	}
 
 	public int getId() {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public MobilePhone getMobilePhone() {
+		return mobilePhone;
+	}
+
+	public FixedInternet getFixedInternet() {
+		return fixedInternet;
+	}
+
+	public MobileInternet getMobileInternet() {
+		return mobileInternet;
 	}
 
 	public List<ValidityPeriod> getValidityPeriods() {
 		return validityPeriods;
 	}
 
-	public void setValidityPeriods(List<ValidityPeriod> validityPeriods) {
-		this.validityPeriods = validityPeriods;
-	}
-
 	public List<Optional> getOptionals() {
 		return optionals;
 	}
-
-	public void setOptionals(List<Optional> optionals) {
-		this.optionals = optionals;
-	}
-
-	public void addValidityPeriod(ValidityPeriod validityPeriod) {
-		validityPeriods.add(validityPeriod);
-	}
-
-	public void addOptional(Optional optional) {
-		optionals.add(optional);
+	
+	public Boolean hasFixedPhone() {
+		return fixedPhone;
 	}
 	
 }

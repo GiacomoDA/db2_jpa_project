@@ -32,5 +32,19 @@ public class UserService {
 			return users.get(0);
 		throw new NonUniqueResultException("More than one user registered with the same credentials");
 	}
+	
+	public void addUser(String username, String email, String password) throws CredentialsException {
+		
+		System.out.println(username + email + password);
+		if (em.find(User.class, username) != null) {
+			System.out.println("@");
+			throw new CredentialsException("The username is taken");
+		}
+		
+		System.out.println("#");
+		User user = new User(username, email, password);
+		em.persist(user);
+		em.flush();
+	}
 
 }

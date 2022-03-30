@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="ISO-8859-1">
+<meta charset="UTF-8">
 <title>Login</title>
 <link rel="stylesheet" type="text/css" media="all"
 	href="css/mystyle.css" th:href="@{css/mystyle.css}" />
 </head>
 <body>
 	<div class="right">
-		<a th:href="@{/...}">Home</a>
+		<a th:href="@{/Home}">Home</a>
 	</div>
 
 	<h1>Welcome</h1>
@@ -22,7 +22,7 @@
 			<input type="password" name="password" required><br><br>
 			<input type="submit" value="Login">
 			<div class="errorMessage">
-				<p style="font-size:small" th:text="${errorMessageLogin}"></p>
+				<p class="errorMessage" th:text="${errorMessageLogin}"></p>
 			</div>
 		</form>
 	</div>
@@ -38,7 +38,7 @@
 			<input type="password" name="password" required><br><br>
 			<input type="submit" value="Register">
 			<div class="errorMessage">
-				<p style="font-size:small" th:text="${errorMessageRegister}"></p>
+				<p class="errorMessage" th:text="${errorMessageRegister}"></p>
 			</div>
 		</form>
 	</div>

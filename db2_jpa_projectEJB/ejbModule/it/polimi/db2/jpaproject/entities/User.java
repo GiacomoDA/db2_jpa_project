@@ -22,7 +22,7 @@ public class User implements Serializable {
 	@Column(name = "failed_payments")
 	private int failedPayments;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
 	@OrderBy("creationTime DESC")
 	private List<Order> orders;
 
