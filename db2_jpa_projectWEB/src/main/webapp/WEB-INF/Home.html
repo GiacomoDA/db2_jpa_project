@@ -4,37 +4,45 @@
 <meta charset="UTF-8">
 <title>Home</title>
 <link rel="stylesheet" type="text/css" media="all"
-	href="/CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
+	href="/..CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
 </head>
 <body>
+	<div class="right" th:if="${session.user}">
+		<p th:text="${'Logged in as ' + session.user.username}"></p>
+	</div>
 	<div class="right">
-		<a th:href="@{/Home}">Home</a>
+		<a th:text="${session.user} ? 'Logout' : 'Login'" th:href=@{/Logout}></a>
+	</div>
+
+	<div th:if="${!packages.size()}">	
+		<h1>No service packages available</h1>
 	</div>
 	
-	<h1>Available packages</h1>
-	
-	<table>
-		<thead>
-			<tr>
-				<th>Package</th>
-				<th>Phone</th>
-				<th>Mobile Phone</th>
-				<th>Internet</th>
-				<th>Mobile Internet</th>
-				<th>Optionals</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:each="p : ${packages}">
-				<td th:text="${p.name}"></td>
-				<td th:text="${p.hasFixedPhone()} ? 'Y' : 'N'"></td>
-				<td th:text="${p.getMobilePhone()} ? 'Y' : 'N'"></td>
-				<td th:text="${p.getFixedInternet()} ? 'Y' : 'N'"></td>
-				<td th:text="${p.getMobileInternet()} ? 'Y' : 'N'"></td>
-				<td th:text="${p.getOptionals().size()}"></td>
-			</tr>
-		</tbody>
-	</table>
+	<div th:if="${packages.size()}">	
+		<h1>Available service packages</h1>	
+		<table>
+			<thead>
+				<tr>
+					<th>Package</th>
+					<th>Phone</th>
+					<th>Mobile Phone</th>
+					<th>Internet</th>
+					<th>Mobile Internet</th>
+					<th>Optionals</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="p : ${packages}">
+					<td><a th:text="${p.name}" th:href=@{/Package(packageId=${p.getId()})}></a></td>
+					<td th:text="${p.hasFixedPhone()} ? 'Y' : 'N'"></td>
+					<td th:text="${p.getMobilePhone()} ? 'Y' : 'N'"></td>
+					<td th:text="${p.getFixedInternet()} ? 'Y' : 'N'"></td>
+					<td th:text="${p.getMobileInternet()} ? 'Y' : 'N'"></td>
+					<td th:text="${p.getOptionals().size()}"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 
 </body>
 </html>

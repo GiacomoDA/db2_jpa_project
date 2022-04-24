@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Package</title>
+<link rel="stylesheet" type="text/css" media="all"
+	href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
+</head>
+<body>
+	<div class="right">
+		<p th:text="${'Logged in as ' + session.user.username}"></p>
+	</div>
+	<div class="right">
+		<a th:text="${session==null} ? 'Login' : 'Logout'" th:href=@{/Logout}></a>
+	</div>
+	<div class="right">
+		<a th:href="@{/Home}">Home</a>
+	</div>
+	
+	<h1>Package Details</h1>
+	
+	<div th:if="${!package.hasFixedPhone() && !package.getMobilePhone() && !package.getFixedInternet() && !package.getMobileInternet()}">
+		<h3>No basic services available</h3>
+	</div>
+	
+	<ul>
+		<li th:if="${package.hasFixedPhone()}">
+			<div>
+				<h3>Fixed Phone</h3>
+			</div>
+		</li>
+
+		<li th:if="${package.getMobilePhone()}">
+			<div>
+				<h3>Mobile Phone</h3>
+			</div>
+		</li>
+
+		<li th:if="${package.getFixedInternet()}">
+			<div>
+				<h3>Fixed Internet</h3>
+			</div>
+		</li>
+
+		<li th:if="${package.getMobileInternet()}">
+			<div>
+				<h3>Mobile Internet</h3>
+			</div>
+		</li>
+	</ul>
+
+	<br>
+
+	<div>
+		<form action="..." method="POST">
+			<div th:if="${!package.getOptionals().size()}">
+				<h3>This package has no optionals</h3>
+			</div>
+			<div th:if="${package.getOptionals().size()}">
+				<h3>Optionals</h3>
+				<div th:each="o : ${package.getOptionals()}">
+					<input type="checkbox" value="${o.getName()}">
+					<label th:text="${o.getName()}: ${o.getMonthlyFee()}€/month"></label>
+				</div>
+			</div>
+			<div class="sideBySide">
+				<h3>Starting Date</h3>
+				<input type="date" id="date" name="date">
+				<p th:text=" ${errorMsg}"></p>
+			</div>
+			<div class="sideBySide">
+				<h3>Duration</h3>
+				<select name="period" id="period" th:each="p : ${package.getValidityPeriods()}">
+					<option th:value="${p.getMonths()}" th:text="${p.getMonths} months: ${p.monthly_fee}€/month"></option>
+				</select>
+			</div>
+			<div>
+				<input type="submit" value="Buy">
+			</div>
+			<div class="errorMessage">
+				<p class="errorMessage" th:text="${errorMessage}"></p>
+			</div>
+		</form>
+	</div>
+
+</body>
+</html>

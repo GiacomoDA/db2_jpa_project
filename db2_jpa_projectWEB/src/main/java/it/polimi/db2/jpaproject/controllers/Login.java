@@ -53,12 +53,11 @@ public class Login extends HttpServlet {
 			if (username == null || password == null || username.isEmpty() || password.isEmpty())
 				throw new Exception("Missing or empty credential value");
 		} catch (Exception e) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing credential value");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing credentials value");
 			return;
 		}
 		
 		User user;
-		
 		try {
 			user = userService.checkCredentials(username, password);
 		} catch (CredentialsException | NonUniqueResultException e) {
@@ -81,7 +80,6 @@ public class Login extends HttpServlet {
 		} else {
 			request.getSession().setAttribute("user", user);
 			path = getServletContext().getContextPath() + "/Home";
-			System.out.println(path);
 			response.sendRedirect(path);
 		}
 

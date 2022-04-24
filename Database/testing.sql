@@ -18,6 +18,15 @@ INSERT INTO `package_to_optional`(`package_id`,`optional`)
 INSERT INTO `package_to_optional`(`package_id`,`optional`)
 	VALUES(2,'optional1');
     
+INSERT INTO `mobile_phone`(`package_id`,`minutes`,`sms`,`minutes_fee`,`sms_fee`)
+	VALUES(1,1000,100,20.00,5.00);
+    
+INSERT INTO `fixed_internet`(`package_id`,`gigabytes`,`gigabytes_fee`)
+	VALUES(1,500,10.00);
+    
+INSERT INTO `mobile_internet`(`package_id`,`gigabytes`,`gigabytes_fee`)
+	VALUES(1,40,20.00);
+    
 INSERT INTO `validity_period`(`package_id`,`months`,`monthly_fee`)
 	VALUES(1,12,19.99);
 INSERT INTO `validity_period`(`package_id`,`months`,`monthly_fee`)

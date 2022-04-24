@@ -15,8 +15,11 @@ public class PackageService {
 	}
 
 	public List<Package> findAllPackages() {
-		List<Package> packages =  em.createNamedQuery("Package.findAll", Package.class).getResultList();		
-		return packages;
+		return em.createNamedQuery("Package.findAll", Package.class).getResultList();
+	}
+	
+	public Package findPackageById(int packageId) {
+		return em.createNamedQuery("Package.findById", Package.class).setParameter(1, packageId).getSingleResult();
 	}
 
 }
