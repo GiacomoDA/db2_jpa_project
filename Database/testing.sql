@@ -1,5 +1,7 @@
 INSERT INTO `user`(`username`,`email`,`password`,`failed_payments`)
 	VALUES('user','email@email','password1',0);
+INSERT INTO `user`(`username`,`email`,`password`,`failed_payments`)
+	VALUES('a','a@a','a',0);
     
 INSERT INTO `optional`(`name`,`monthly_fee`)
 	VALUES('optional1',10.00);    
@@ -29,6 +31,8 @@ INSERT INTO `mobile_internet`(`package_id`,`gigabytes`,`gigabytes_fee`)
     
 INSERT INTO `validity_period`(`package_id`,`months`,`monthly_fee`)
 	VALUES(1,12,19.99);
+INSERT INTO `validity_period`(`package_id`,`months`,`monthly_fee`)
+	VALUES(1,24,29.99);
 INSERT INTO `validity_period`(`package_id`,`months`,`monthly_fee`)
 	VALUES(2,24,39.99);
     

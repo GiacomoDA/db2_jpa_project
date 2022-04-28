@@ -17,7 +17,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.db2.jpaproject.services.*;
-import it.polimi.db2.jpaproject.entities.Package;
+import it.polimi.db2.jpaproject.entities.ServicePackage;
 
 @WebServlet("/Package")
 public class GoToPackage extends HttpServlet {
@@ -54,7 +54,7 @@ public class GoToPackage extends HttpServlet {
 			return;
 		}
 		
-		Package servicePackage;
+		ServicePackage servicePackage;
 
 		try {			
 			servicePackage = packageService.findPackageById(packageId);

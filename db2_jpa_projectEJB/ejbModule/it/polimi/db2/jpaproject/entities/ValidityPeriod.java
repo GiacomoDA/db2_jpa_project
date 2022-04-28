@@ -6,6 +6,7 @@ import javax.persistence.*;
 @Entity
 @IdClass(VPKey.class)
 @Table(name = "validity_period", schema = "db2_jpa_project")
+@NamedQuery(name = "ValidityPeriod.findValidityPeriod", query = "SELECT p FROM ValidityPeriod p WHERE p.servicePackage = ?1 and p.months = ?2")
 
 public class ValidityPeriod implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -13,7 +14,7 @@ public class ValidityPeriod implements Serializable {
 	@Id
 	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
 	@JoinColumn(name = "package_id")
-	private Package servicePackage;
+	private ServicePackage servicePackage;
 	
 	@Id
 	private int months;

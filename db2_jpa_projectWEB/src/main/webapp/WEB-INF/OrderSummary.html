@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Package</title>
+<link rel="stylesheet" type="text/css" media="all"
+	href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
+</head>
+<body>
+	<div class="right" th:if="${session.user}">
+		<p th:text="${'Logged in as ' + session.user.username}"></p>
+	</div>
+	<div class="right">
+		<a th:text="${session.user} ? 'Logout' : 'Login'" th:href=@{/Logout}></a>
+	</div>
+	<div class="right">
+		<a th:href="@{/Home}">Home</a>
+	</div>
+	
+	<h1>Order Summary</h1>
+	<div>
+		<p th:text="${session.order.getServicePackage().getName()}"></p>
+		<ul>
+			<li th:each="o : ${session.order.getOptionals()}" th:text="o.getName()"></li>
+		</ul>
+	</div>
+	
+
+</body>
+</html>

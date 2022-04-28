@@ -3,7 +3,7 @@ package it.polimi.db2.jpaproject.entities;
 import java.io.Serializable;
 import javax.persistence.*;
 
-import java.util.Date;
+import java.time.*;
 import java.util.List;
 
 @Entity
@@ -16,13 +16,11 @@ public class Order implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@Column(name = "creation_time")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date creationTime;
+	@Column(name = "creation_time", columnDefinition = "timestamp")
+	private LocalDateTime creationTime;
 
-	@Column(name = "activation_date")
-	@Temporal(TemporalType.DATE)
-	private Date activationDate;
+	@Column(name = "activation_date", columnDefinition = "date")
+	private LocalDate activationDate;
 	
 	private int total;
 
@@ -36,7 +34,7 @@ public class Order implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "package_id")
-	private Package servicePackage;
+	private ServicePackage servicePackage;
 	
 	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
 	@JoinTable(name = "order_to_optional", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "optional"))
@@ -45,36 +43,31 @@ public class Order implements Serializable {
 	public Order() {
 	}
 
+	public Order(LocalDate activationDate, int total, int months, ServicePackage servicePackage, List<Optional> optionals) {
+		super();
+		this.activationDate = activationDate;
+		this.total = total;
+		this.months = months;
+		this.servicePackage = servicePackage;
+		this.optionals = optionals;
+		this.creationTime = LocalDateTime.now();
+		this.accepted = false;
+	}
+
 	public int getId() {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public Date getCreationTime() {
+	public LocalDateTime getCreationTime() {
 		return creationTime;
 	}
 
-	public void setCreationTime(Date creationTime) {
-		this.creationTime = creationTime;
-	}
-
-	public Date getActivationDate() {
+	public LocalDate getActivationDate() {
 		return activationDate;
 	}
 
-	public void setActivationDate(Date activationDate) {
-		this.activationDate = activationDate;
-	}	
-
 	public int getTotal() {
 		return total;
-	}
-
-	public void setTotal(int total) {
-		this.total = total;
 	}
 
 	public boolean isAccepted() {
@@ -89,10 +82,6 @@ public class Order implements Serializable {
 		return months;
 	}
 
-	public void setMonths(int months) {
-		this.months = months;
-	}
-
 	public User getUser() {
 		return user;
 	}
@@ -101,11 +90,11 @@ public class Order implements Serializable {
 		this.user = user;
 	}
 
-	public Package getServicePackage() {
+	public ServicePackage getServicePackage() {
 		return servicePackage;
 	}
 
-	public void setServicePackage(Package servicePackage) {
+	public void setServicePackage(ServicePackage servicePackage) {
 		this.servicePackage = servicePackage;
 	}
 

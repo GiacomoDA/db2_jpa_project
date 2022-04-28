@@ -12,7 +12,7 @@ public class FixedInternet implements Serializable {
 	@Id
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "package_id")
-	private Package servicePackage;
+	private ServicePackage servicePackage;
 	
 	private int gigabytes;
 	

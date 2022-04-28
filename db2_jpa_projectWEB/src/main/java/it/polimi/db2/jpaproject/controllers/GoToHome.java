@@ -17,7 +17,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.db2.jpaproject.services.*;
-import it.polimi.db2.jpaproject.entities.Package;
+import it.polimi.db2.jpaproject.entities.ServicePackage;
 
 @WebServlet("/Home")
 public class GoToHome extends HttpServlet {
@@ -42,11 +42,12 @@ public class GoToHome extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<Package> packages = null;
+		List<ServicePackage> packages = null;
 
 		try {			
 			packages = packageService.findAllPackages();
 		} catch (Exception e) {
+			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to get data");
 			return;
 		}

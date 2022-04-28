@@ -7,11 +7,11 @@
 	href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
 </head>
 <body>
-	<div class="right">
+	<div class="right" th:if="${session.user}">
 		<p th:text="${'Logged in as ' + session.user.username}"></p>
 	</div>
 	<div class="right">
-		<a th:text="${session==null} ? 'Login' : 'Logout'" th:href=@{/Logout}></a>
+		<a th:text="${session.user} ? 'Logout' : 'Login'" th:href=@{/Logout}></a>
 	</div>
 	<div class="right">
 		<a th:href="@{/Home}">Home</a>
@@ -33,18 +33,26 @@
 		<li th:if="${package.getMobilePhone()}">
 			<div>
 				<h3>Mobile Phone</h3>
+				<p th:text="${'Minutes: ' + package.getMobilePhone().getMinutes()}"></p>
+				<p th:text="${'SMS: ' + package.getMobilePhone().getSms()}"></p>
+				<p th:text="${'Extra minutes fee: ' + package.getMobilePhone().getMinutesFee()}"></p>
+				<p th:text="${'Extra SMS fee: ' + package.getMobilePhone().getSmsFee()}"></p>
 			</div>
 		</li>
 
 		<li th:if="${package.getFixedInternet()}">
 			<div>
 				<h3>Fixed Internet</h3>
+				<p th:text="${'Gigabytes: ' + package.getFixedInternet().getGigabytes()}"></p>
+				<p th:text="${'Extra gigabytes fee: ' + package.getFixedInternet().getGigabytesFee()}"></p>
 			</div>
 		</li>
 
 		<li th:if="${package.getMobileInternet()}">
 			<div>
 				<h3>Mobile Internet</h3>
+				<p th:text="${'Gigabytes: ' + package.getMobileInternet().getGigabytes()}"></p>
+				<p th:text="${'Extra gigabytes fee: ' + package.getMobileInternet().getGigabytesFee()}"></p>
 			</div>
 		</li>
 	</ul>
@@ -52,33 +60,38 @@
 	<br>
 
 	<div>
-		<form action="..." method="POST">
+		<form th:action="@{/BuyPackage}" method="POST">
 			<div th:if="${!package.getOptionals().size()}">
 				<h3>This package has no optionals</h3>
 			</div>
 			<div th:if="${package.getOptionals().size()}">
 				<h3>Optionals</h3>
 				<div th:each="o : ${package.getOptionals()}">
-					<input type="checkbox" value="${o.getName()}">
-					<label th:text="${o.getName()}: ${o.getMonthlyFee()}€/month"></label>
+					<input type="checkbox" name="optional" th:value="${o.getName()}" th:id="${o.getName()}">
+					<label th:text="${o.getName() + ': ' + o.getMonthlyFee() + '/month'}" th:for="${o.getName()}"></label>
 				</div>
 			</div>
 			<div class="sideBySide">
 				<h3>Starting Date</h3>
-				<input type="date" id="date" name="date">
-				<p th:text=" ${errorMsg}"></p>
+				<input type="date" name="date" required>
+				<div class="errorMessage">
+					<p class="errorMessage" th:text="${errorMessageDate}"></p>
+				</div>
 			</div>
 			<div class="sideBySide">
 				<h3>Duration</h3>
-				<select name="period" id="period" th:each="p : ${package.getValidityPeriods()}">
-					<option th:value="${p.getMonths()}" th:text="${p.getMonths} months: ${p.monthly_fee}€/month"></option>
+				<select name="period" required>
+					<option th:each="p : ${package.getValidityPeriods()}" th:value="${p.getMonths()}" th:text="${p.getMonths() + ' months: ' + p.getMonthlyFee() + '/month'}"></option>
 				</select>
+			</div>
+			<div>
+				<input type="hidden" name="packageId" th:value="${package.getId()}">
 			</div>
 			<div>
 				<input type="submit" value="Buy">
 			</div>
 			<div class="errorMessage">
-				<p class="errorMessage" th:text="${errorMessage}"></p>
+				<p class="errorMessage" th:text="${errorMessageForm}"></p>
 			</div>
 		</form>
 	</div>

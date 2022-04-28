@@ -8,10 +8,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "package", schema = "db2_jpa_project")
 @NamedQueries({
-		@NamedQuery(name = "Package.findAll", query = "SELECT p FROM Package p"),
-		@NamedQuery(name = "Package.findById", query = "SELECT p FROM Package p WHERE p.id = ?1")})
+		@NamedQuery(name = "ServicePackage.findAll", query = "SELECT p FROM ServicePackage p"),
+		@NamedQuery(name = "ServicePackage.findById", query = "SELECT p FROM ServicePackage p WHERE p.id = ?1")})
 
-public class Package implements Serializable {
+public class ServicePackage implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -40,10 +40,10 @@ public class Package implements Serializable {
 	@JoinTable(name = "package_to_optional", joinColumns = @JoinColumn(name = "package_id"), inverseJoinColumns = @JoinColumn(name = "optional"))
 	private List<Optional> optionals;
 	
-	public Package() {
+	public ServicePackage() {
 	}
 
-	public Package(String name, Boolean fixedPhone, MobilePhone mobilePhone, FixedInternet fixedInternet,
+	public ServicePackage(String name, Boolean fixedPhone, MobilePhone mobilePhone, FixedInternet fixedInternet,
 			MobileInternet mobiletInternet, List<ValidityPeriod> validityPeriods, List<Optional> optionals) {
 		this.name = name;
 		this.fixedPhone = fixedPhone;

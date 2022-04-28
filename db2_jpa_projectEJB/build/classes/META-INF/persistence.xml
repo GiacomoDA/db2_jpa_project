@@ -4,7 +4,7 @@
 		<jta-data-source>JPAProjectResource</jta-data-source>
 		<class>it.polimi.db2.jpaproject.entities.Optional</class>
 		<class>it.polimi.db2.jpaproject.entities.Order</class>
-		<class>it.polimi.db2.jpaproject.entities.Package</class>
+		<class>it.polimi.db2.jpaproject.entities.ServicePackage</class>
 		<class>it.polimi.db2.jpaproject.entities.User</class>
 		<class>it.polimi.db2.jpaproject.entities.ValidityPeriod</class>
 		<class>it.polimi.db2.jpaproject.entities.MobilePhone</class>

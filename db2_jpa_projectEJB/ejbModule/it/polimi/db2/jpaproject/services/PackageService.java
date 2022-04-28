@@ -3,7 +3,7 @@ package it.polimi.db2.jpaproject.services;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import it.polimi.db2.jpaproject.entities.Package;
+import it.polimi.db2.jpaproject.entities.ServicePackage;
 import java.util.List;
 
 @Stateless
@@ -14,12 +14,12 @@ public class PackageService {
 	public PackageService() {
 	}
 
-	public List<Package> findAllPackages() {
-		return em.createNamedQuery("Package.findAll", Package.class).getResultList();
+	public List<ServicePackage> findAllPackages() {
+		return em.createNamedQuery("ServicePackage.findAll", ServicePackage.class).getResultList();
 	}
 	
-	public Package findPackageById(int packageId) {
-		return em.createNamedQuery("Package.findById", Package.class).setParameter(1, packageId).getSingleResult();
+	public ServicePackage findPackageById(int packageId) {
+		return em.createNamedQuery("ServicePackage.findById", ServicePackage.class).setParameter(1, packageId).getSingleResult();
 	}
 
 }

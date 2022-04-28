@@ -5,6 +5,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "optional", schema = "db2_jpa_project")
+@NamedQuery(name = "Optional.findOptionals", query = "SELECT o FROM Optional o WHERE o.name IN ?1")
 
 public class Optional implements Serializable {
 	private static final long serialVersionUID = 1L;
