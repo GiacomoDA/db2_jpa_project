@@ -1,6 +1,8 @@
 package it.polimi.db2.jpaproject.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+
 import javax.persistence.*;
 
 @Entity
@@ -14,34 +16,32 @@ public class MobileInternet implements Serializable {
 	@JoinColumn(name = "package_id")
 	private ServicePackage servicePackage;
 	
-	private int gigabytes;
+	private Integer gigabytes;
 	
-	@Column(name = "gigabytes_fee")
-	private int gigabytesFee;
+	@Column(name = "gigabytes_fee", precision = 10, scale = 2)
+	private BigDecimal gigabytesFee;
 	
 	public MobileInternet() {
 	}
-
-	public MobileInternet(int gigabytes, int gigabytesFee) {
+	
+	public MobileInternet(ServicePackage servicePackage, Integer gigabytes, BigDecimal gigabytesFee) {
+		this.servicePackage = servicePackage;
 		this.gigabytes = gigabytes;
 		this.gigabytesFee = gigabytesFee;
 	}
 
-	public int getGigabytes() {
+	public Integer getGigabytes() {
 		return gigabytes;
 	}
 
-	public void setGigabytes(int gigabytes) {
-		this.gigabytes = gigabytes;
-	}
-
-	public int getGigabytesFee() {
+	public BigDecimal getGigabytesFee() {
 		return gigabytesFee;
 	}
 
-	public void setGigabytesFee(int gigabytesFee) {
-		this.gigabytesFee = gigabytesFee;
+	public String toString() {
+		return gigabytes + " GB\n" + "Extra GB fee: €" + gigabytesFee;
 	}
+
 
 }
 

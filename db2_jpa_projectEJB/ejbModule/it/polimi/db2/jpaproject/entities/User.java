@@ -20,7 +20,7 @@ public class User implements Serializable {
 	private String password;
 
 	@Column(name = "failed_payments")
-	private int failedPayments;
+	private Integer failedPayments;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
 	@OrderBy("creationTime DESC")
@@ -60,7 +60,7 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
-	public int getFailedPayments() {
+	public Integer getFailedPayments() {
 		return failedPayments;
 	}
 

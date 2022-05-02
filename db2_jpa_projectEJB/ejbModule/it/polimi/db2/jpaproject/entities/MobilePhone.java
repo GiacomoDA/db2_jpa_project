@@ -1,6 +1,8 @@
 package it.polimi.db2.jpaproject.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+
 import javax.persistence.*;
 
 @Entity
@@ -14,57 +16,48 @@ public class MobilePhone implements Serializable {
 	@JoinColumn(name = "package_id")
 	private ServicePackage servicePackage;
 	
-	private int minutes;
+	private Integer minutes;
 	
-	private int sms;
+	private Integer sms;
 	
-	@Column(name = "minutes_fee")
-	private int minutesFee;
+	@Column(name = "minutes_fee", precision = 10, scale = 2)
+	private BigDecimal minutesFee;
 	
-	@Column(name = "sms_fee")
-	private int smsFee;
+	@Column(name = "sms_fee", precision = 10, scale = 2)
+	private BigDecimal smsFee;
 	
 	public MobilePhone() {
 	}
 
-	public MobilePhone(int minutes, int sms, int minutesFee, int smsFee) {
+	public MobilePhone(ServicePackage servicePackage, Integer minutes, Integer sms, BigDecimal minutesFee,
+			BigDecimal smsFee) {
+		this.servicePackage = servicePackage;
 		this.minutes = minutes;
 		this.sms = sms;
 		this.minutesFee = minutesFee;
 		this.smsFee = smsFee;
 	}
 
-	public int getMinutes() {
+	public Integer getMinutes() {
 		return minutes;
 	}
 
-	public void setMinutes(int minutes) {
-		this.minutes = minutes;
-	}
-
-	public int getSms() {
+	public Integer getSms() {
 		return sms;
 	}
 
-	public void setSms(int sms) {
-		this.sms = sms;
-	}
-
-	public int getMinutesFee() {
+	public BigDecimal getMinutesFee() {
 		return minutesFee;
 	}
 
-	public void setMinutesFee(int minutesFee) {
-		this.minutesFee = minutesFee;
-	}
-
-	public int getSmsFee() {
+	public BigDecimal getSmsFee() {
 		return smsFee;
 	}
 
-	public void setSmsFee(int smsFee) {
-		this.smsFee = smsFee;
-	}	
+	@Override
+	public String toString() {
+		return minutes + " Minutes\n" + sms + " SMS\n" + "Extra minutes fee: €" + minutesFee + "\n" + "Extra SMS fee: €" + smsFee;
+	}
 
 }
 

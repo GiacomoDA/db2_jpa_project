@@ -67,9 +67,9 @@ FROM `package_to_optional`;
 SELECT *
 FROM `order_to_optional`;
 SELECT *
-FROM `validity_period`;
-SELECT *
 FROM `order`;
+SELECT *
+FROM `validity_period`;
 SELECT *
 FROM `suspended_order`;
 SELECT *

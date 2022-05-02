@@ -66,9 +66,6 @@ public class Login extends HttpServlet {
 			return;
 		}
 
-		// If the user exists, add info to the session and go to home page, otherwise
-		// show login page with error message
-
 		String path;
 		
 		if (user == null) {
@@ -78,9 +75,19 @@ public class Login extends HttpServlet {
 			path = "/index.html";
 			templateEngine.process(path, context, response.getWriter());
 		} else {
+			// if the user exist add it to the session
 			request.getSession().setAttribute("user", user);
-			path = getServletContext().getContextPath() + "/Home";
-			response.sendRedirect(path);
+			if (request.getSession().getAttribute("order") == null) {
+				// if there is no order associated to the session go to home
+				path = getServletContext().getContextPath() + "/Home";
+				response.sendRedirect(path);
+			} else {
+				// if there already is an order in the session go back to order summary
+				ServletContext servletContext = getServletContext();
+				final WebContext context = new WebContext(request, response, servletContext, request.getLocale());
+				path = "/WEB-INF/OrderSummary.html";
+				templateEngine.process(path, context, response.getWriter());				
+			}
 		}
 
 	}

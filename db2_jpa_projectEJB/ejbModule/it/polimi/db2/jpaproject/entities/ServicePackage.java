@@ -16,7 +16,7 @@ public class ServicePackage implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Integer id;
 
 	private String name;
 	
@@ -54,7 +54,7 @@ public class ServicePackage implements Serializable {
 		this.optionals = optionals;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 

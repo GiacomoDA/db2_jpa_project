@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.EJB;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,14 +27,11 @@ import it.polimi.db2.jpaproject.entities.*;
 @WebServlet("/BuyPackage")
 public class BuyPackage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+
 	private TemplateEngine templateEngine;
-	
+
 	@EJB(name = "it.polimi.db2.mission.services/OrderService")
 	private OrderService orderService;
-
-	@EJB(name = "it.polimi.db2.mission.services/PackageService")
-	private PackageService packageService;
 
 	public BuyPackage() {
 		super();
@@ -48,52 +46,41 @@ public class BuyPackage extends HttpServlet {
 		templateResolver.setSuffix(".html");
 	}
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<String> optionals = Arrays.asList(Optional.ofNullable(request.getParameterValues("optional")).orElse(new String[0]));
-		int packageId = Integer.parseInt(request.getParameter("packageId"));
-		int months = Integer.parseInt(request.getParameter("period"));
-		String date = request.getParameter("date");
-		
-		String path;
-		LocalDate activationDate;
-		
-		try {
-			activationDate = LocalDate.parse(date);
-		}
-		catch (DateTimeParseException e) {
-			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Date not valid");
-			return;
-		}
-		
-		if (!activationDate.isAfter(LocalDate.now())) {			
-			ServicePackage servicePackage;
-
-			try {			
-				servicePackage = packageService.findPackageById(packageId);
-			} catch (Exception e) {
-				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to get data");
-				return;
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		if (request.getSession().getAttribute("user") != null) {
+			if (request.getSession().getAttribute("order") != null) {
+				// if the user is logged in and there is an order associated to the session,
+				// confirm the order
+				Boolean outcome = Boolean.valueOf(request.getParameter("outcome"));
+				Boolean paymentOutcome = orderService.confirmOrder((Order) request.getSession().getAttribute("order"),
+						(User) request.getSession().getAttribute("user"), outcome);
+				if (paymentOutcome != null) {
+					// the payment was successful
+				} else {
+					// the payment was declined
+				}
+				request.getSession().removeAttribute("order");
+				String path = getServletContext().getContextPath() + "/Home";
+				response.sendRedirect(path);
+			} else {
+				// if at this point there is a user but no order, something is wrong
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "User and order not found");
 			}
-			ServletContext servletContext = getServletContext();
-			final WebContext context = new WebContext(request, response, servletContext, request.getLocale());
-			context.setVariable("errorMessageDate", "The selected date is not valid");
-			context.setVariable("package", servicePackage);
-			path = "/WEB-INF/Package.html";
-			templateEngine.process(path, context, response.getWriter());			
-		} else {			
-			Order order = orderService.createOrder(packageId, activationDate, months, optionals);
-			request.getSession().setAttribute("order", order);
-	
-			path = "/WEB-INF/OrderSummary.html";
-			ServletContext servletContext = getServletContext();
-			final WebContext context = new WebContext(request, response, servletContext, request.getLocale());
-	
-			templateEngine.process(path, context, response.getWriter());
+		} else {
+			if (request.getSession().getAttribute("order") != null) {
+				// if there is no user in the session redirect to the login page
+				String path = getServletContext().getContextPath() + "/index.html";
+				response.sendRedirect(path);
+			} else {
+				// if there is no user and no order, something is wrong
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Order not found");
+			}
 		}
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		doGet(request, response);
 	}
 

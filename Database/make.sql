@@ -28,7 +28,7 @@ CREATE TABLE `employee` (
 DROP TABLE IF EXISTS `optional`;
 CREATE TABLE `optional` (
 	`name` varchar(30) NOT NULL,
-    `monthly_fee` decimal(5,2) NOT NULL,
+    `monthly_fee` decimal(10,2) NOT NULL,
     PRIMARY KEY (name),
     CHECK (`monthly_fee` >= 0.00)
 );
@@ -47,7 +47,7 @@ DROP TABLE IF EXISTS `validity_period`;
 CREATE TABLE `validity_period` (
     `package_id` int NOT NULL,
 	`months` int NOT NULL,
-    `monthly_fee` decimal(5,2) NOT NULL,
+    `monthly_fee` decimal(10,2) NOT NULL,
     PRIMARY KEY (`months`, `package_id`),
     FOREIGN KEY (`package_id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CHECK (`monthly_fee` >= 0.00)
@@ -58,7 +58,7 @@ CREATE TABLE `order` (
 	`id` int NOT NULL AUTO_INCREMENT,
     `creation_time` datetime NOT NULL,
     `activation_date` date NOT NULL,
-    `total` int NOT NULL,
+    `total` decimal(10,2) NOT NULL,
     `accepted` bit,
     `months` int,
     `user` varchar(30),
@@ -97,8 +97,8 @@ CREATE TABLE `mobile_phone` (
 	`package_id` int NOT NULL,
     `minutes` smallint NOT NULL,
     `sms` smallint NOT NULL,
-    `minutes_fee` decimal(5,2) NOT NULL,
-    `sms_fee` decimal(5,2) NOT NULL,
+    `minutes_fee` decimal(10,2) NOT NULL,
+    `sms_fee` decimal(10,2) NOT NULL,
     PRIMARY KEY (`package_id`),
     FOREIGN KEY (`package_id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CHECK (`minutes` >= 0),
@@ -112,7 +112,7 @@ DROP TABLE IF EXISTS `fixed_internet`;
 CREATE TABLE `fixed_internet` (
 	`package_id` int NOT NULL,
     `gigabytes` smallint NOT NULL,
-    `gigabytes_fee` decimal(5,2) NOT NULL,
+    `gigabytes_fee` decimal(10,2) NOT NULL,
     PRIMARY KEY (`package_id`),
     FOREIGN KEY (`package_id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CHECK (`gigabytes` >= 0),
@@ -124,7 +124,7 @@ DROP TABLE IF EXISTS `mobile_internet`;
 CREATE TABLE `mobile_internet` (
 	`package_id` int NOT NULL,
     `gigabytes` smallint NOT NULL,
-    `gigabytes_fee` decimal(5,2) NOT NULL,
+    `gigabytes_fee` decimal(10,2) NOT NULL,
     PRIMARY KEY (`package_id`),
     FOREIGN KEY (`package_id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CHECK (`gigabytes` >= 0),
@@ -189,7 +189,7 @@ DROP TABLE IF EXISTS `validity_period_sales`;
 CREATE TABLE `validity_period_sales` (
 	`package_id` int NOT NULL,
     `months` int NOT NULL,
-    `monthly_fee` decimal(5,2) NOT NULL,
+    `monthly_fee` decimal(10,2) NOT NULL,
     `sales` int NOT NULL,
     PRIMARY KEY (`package_id`, `months`),
     FOREIGN KEY (`package_id`, `months`) REFERENCES `validity_period`(`package_id`, `months`) ON DELETE CASCADE ON UPDATE CASCADE,

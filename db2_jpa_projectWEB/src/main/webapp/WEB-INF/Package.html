@@ -33,26 +33,21 @@
 		<li th:if="${package.getMobilePhone()}">
 			<div>
 				<h3>Mobile Phone</h3>
-				<p th:text="${'Minutes: ' + package.getMobilePhone().getMinutes()}"></p>
-				<p th:text="${'SMS: ' + package.getMobilePhone().getSms()}"></p>
-				<p th:text="${'Extra minutes fee: ' + package.getMobilePhone().getMinutesFee()}"></p>
-				<p th:text="${'Extra SMS fee: ' + package.getMobilePhone().getSmsFee()}"></p>
+				<p style="white-space: pre;" th:text="${package.getMobilePhone().toString()}"></p>
 			</div>
 		</li>
 
 		<li th:if="${package.getFixedInternet()}">
 			<div>
 				<h3>Fixed Internet</h3>
-				<p th:text="${'Gigabytes: ' + package.getFixedInternet().getGigabytes()}"></p>
-				<p th:text="${'Extra gigabytes fee: ' + package.getFixedInternet().getGigabytesFee()}"></p>
+				<p style="white-space: pre;" th:text="${package.getFixedInternet().toString()}"></p>
 			</div>
 		</li>
 
 		<li th:if="${package.getMobileInternet()}">
 			<div>
 				<h3>Mobile Internet</h3>
-				<p th:text="${'Gigabytes: ' + package.getMobileInternet().getGigabytes()}"></p>
-				<p th:text="${'Extra gigabytes fee: ' + package.getMobileInternet().getGigabytesFee()}"></p>
+				<p style="white-space: pre;" th:text="${package.getMobileInternet().toString()}"></p>
 			</div>
 		</li>
 	</ul>
@@ -60,7 +55,7 @@
 	<br>
 
 	<div>
-		<form th:action="@{/BuyPackage}" method="POST">
+		<form th:action="@{/SelectPackage}" method="POST">
 			<div th:if="${!package.getOptionals().size()}">
 				<h3>This package has no optionals</h3>
 			</div>

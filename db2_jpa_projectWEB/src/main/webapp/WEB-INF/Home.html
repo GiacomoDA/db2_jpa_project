@@ -43,6 +43,26 @@
 			</tbody>
 		</table>
 	</div>
+	
+	<div th:if="${orders.size()}">	
+		<h1>Rejected orders</h1>	
+		<table>
+			<thead>
+				<tr>
+					<th>Package</th>
+					<th>Creation date</th>
+					<th>Total amount</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="o : ${orders}">
+					<td><a th:text="${o.getServicePackage().getName()}" th:href=@{/OrderSummary(orderId=${o.getId()})}></a></td>
+					<td th:text="${o.getCreationTime().toString()}"></td>
+					<td th:text="${o.getTotal()}"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 
 </body>
 </html>

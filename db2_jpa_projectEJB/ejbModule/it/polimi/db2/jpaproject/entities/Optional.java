@@ -1,6 +1,8 @@
 package it.polimi.db2.jpaproject.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+
 import javax.persistence.*;
 
 @Entity
@@ -13,13 +15,13 @@ public class Optional implements Serializable {
 	@Id
 	private String name;
 
-	@Column(name = "monthly_fee")
-	private int monthlyFee;
+	@Column(name = "monthly_fee", precision = 10, scale = 2)
+	private BigDecimal monthlyFee;
 	
 	public Optional() {
 	}	
 
-	public Optional(String name, int monthlyFee) {
+	public Optional(String name, BigDecimal monthlyFee) {
 		this.name = name;
 		this.monthlyFee = monthlyFee;
 	}
@@ -28,16 +30,8 @@ public class Optional implements Serializable {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public int getMonthlyFee() {
+	public BigDecimal getMonthlyFee() {
 		return monthlyFee;
-	}
-
-	public void setMonthlyFee(int monthlyFee) {
-		this.monthlyFee = monthlyFee;
 	}
 
 }

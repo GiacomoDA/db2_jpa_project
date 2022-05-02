@@ -1,6 +1,8 @@
 package it.polimi.db2.jpaproject.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+
 import javax.persistence.*;
 
 import java.time.*;
@@ -8,13 +10,16 @@ import java.util.List;
 
 @Entity
 @Table(name = "order", schema = "db2_jpa_project")
+@NamedQueries({
+	@NamedQuery(name = "Order.findRejectedByUser", query = "SELECT o FROM Order o WHERE o.accepted = false AND o.user = ?1"),
+	@NamedQuery(name = "Order.findById", query = "SELECT o FROM Order o WHERE o.id = ?1")})
 
 public class Order implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Integer id;
 
 	@Column(name = "creation_time", columnDefinition = "timestamp")
 	private LocalDateTime creationTime;
@@ -22,11 +27,12 @@ public class Order implements Serializable {
 	@Column(name = "activation_date", columnDefinition = "date")
 	private LocalDate activationDate;
 	
-	private int total;
+	@Column(precision = 10, scale = 2)
+	private BigDecimal total;
 
-	private boolean accepted;
+	private Boolean accepted;
 	
-	private int months;
+	private Integer months;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user")
@@ -36,14 +42,14 @@ public class Order implements Serializable {
 	@JoinColumn(name = "package_id")
 	private ServicePackage servicePackage;
 	
-	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "order_to_optional", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "optional"))
 	private List<Optional> optionals;
 
 	public Order() {
 	}
 
-	public Order(LocalDate activationDate, int total, int months, ServicePackage servicePackage, List<Optional> optionals) {
+	public Order(LocalDate activationDate, BigDecimal total, Integer months, ServicePackage servicePackage, List<Optional> optionals) {
 		super();
 		this.activationDate = activationDate;
 		this.total = total;
@@ -54,7 +60,7 @@ public class Order implements Serializable {
 		this.accepted = false;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -66,11 +72,11 @@ public class Order implements Serializable {
 		return activationDate;
 	}
 
-	public int getTotal() {
+	public BigDecimal getTotal() {
 		return total;
 	}
 
-	public boolean isAccepted() {
+	public Boolean isAccepted() {
 		return accepted;
 	}
 
@@ -78,7 +84,7 @@ public class Order implements Serializable {
 		this.accepted = accepted;
 	}
 
-	public int getMonths() {
+	public Integer getMonths() {
 		return months;
 	}
 
@@ -94,20 +100,8 @@ public class Order implements Serializable {
 		return servicePackage;
 	}
 
-	public void setServicePackage(ServicePackage servicePackage) {
-		this.servicePackage = servicePackage;
-	}
-
 	public List<Optional> getOptionals() {
 		return optionals;
 	}
 	
-	public void setOptionals(List<Optional> optionals) {
-		this.optionals = optionals;
-	}
-
-	public void addOptional(Optional optional) {
-		optionals.add(optional);
-	}
-
 }

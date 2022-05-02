@@ -21,9 +21,17 @@
 	<div>
 		<p th:text="${session.order.getServicePackage().getName()}"></p>
 		<ul>
-			<li th:each="o : ${session.order.getOptionals()}" th:text="o.getName()"></li>
+			<li th:each="o : ${session.order.getOptionals()}">
+				<p th:text="${o.getName()}"></p>
+			</li>
 		</ul>
+		<p th:text="${'Total: ' + session.order.getTotal()}"></p>
 	</div>
+	
+	<form th:action="@{/BuyPackage}">
+		<input type="checkbox" name="outcome" value="TRUE">
+		<button type="submit" th:text="${session.user ? 'Buy' : 'Login'}"></button>
+	</form>
 	
 
 </body>
