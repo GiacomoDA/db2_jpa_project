@@ -4,9 +4,9 @@ INSERT INTO `user`(`username`,`email`,`password`,`failed_payments`)
 	VALUES('a','a@a','a',0);
     
 INSERT INTO `optional`(`name`,`monthly_fee`)
-	VALUES('optional1',10.00);    
+	VALUES('optional1',10.50);    
 INSERT INTO `optional`(`name`,`monthly_fee`)
-	VALUES('optional2',20.00);
+	VALUES('optional2',20.99);
     
 INSERT INTO `package`(`name`,`fixed_phone`)
 	VALUES('package1',TRUE);    

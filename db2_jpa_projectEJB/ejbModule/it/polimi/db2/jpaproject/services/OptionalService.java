@@ -4,7 +4,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import it.polimi.db2.jpaproject.entities.*;
-import it.polimi.db2.jpaproject.entities.ServicePackage;
 
 import java.util.List;
 

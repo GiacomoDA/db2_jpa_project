@@ -65,7 +65,7 @@ public class Login extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not check credentials");
 			return;
 		}
-
+		
 		String path;
 		
 		if (user == null) {
