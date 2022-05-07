@@ -41,7 +41,7 @@ BEGIN
 	END IF;
 END//
 
--- when new order-optional links are inserted, update the sales relative to the order's package
+-- when new order-optional links are inserted, if the relative order is accepted update the sales relative to the order's package
 DROP TRIGGER IF EXISTS `update_package_sales3`//
 CREATE TRIGGER `update_package_sales3` AFTER INSERT ON `order_to_optional`
 FOR EACH ROW
@@ -51,15 +51,15 @@ BEGIN
 	IF (SELECT `accepted` FROM `order` WHERE `id` = NEW.`order_id`) = 1 THEN
 		IF EXISTS (SELECT * FROM `package_sales` WHERE `id` = `pkg_id`) THEN
 			UPDATE `package_sales`
-				SET `sales_with_optionals` = (SELECT count(DISTINCT(`order_id`)) FROM `order_to_optional` WHERE `order_id` = NEW.`order_id`), `optionals_sales` = `optionals_sales` + 1
+				SET `sales_with_optionals` = (SELECT count(DISTINCT `order_id`) FROM `order_to_optional` WHERE `order_id` IN (SELECT `id` FROM `order` WHERE `package_id` = `pkg_id` AND `accepted` = 1) AND `optional` = NEW.`optional`), `optionals_sales` = `optionals_sales` + 1
                 WHERE `id` = `pkg_id`;
 		END IF;
 	END IF;
 END//
 
--- when an order is accepted update the sales relative to the sold package's validity period
-DROP TRIGGER IF EXISTS `update_period_sales`//
-CREATE TRIGGER `update_period_sales` AFTER UPDATE ON `order`
+-- when an order is updated and is now accepted, update the sales relative to the sold package validity period
+DROP TRIGGER IF EXISTS `update_period_sales1`//
+CREATE TRIGGER `update_period_sales1` AFTER INSERT ON `order`
 FOR EACH ROW
 BEGIN
 	IF NEW.`accepted` = 1 THEN
@@ -74,9 +74,43 @@ BEGIN
 	END IF;
 END//
 
--- when an order is accepted update the sales relative to the sold optionals
-DROP TRIGGER IF EXISTS `update_optional_sales`//
-CREATE TRIGGER `update_optional_sales` AFTER UPDATE ON `order`
+-- when an accepted order is inserted, update the sales relative to the sold package validity period
+DROP TRIGGER IF EXISTS `update_period_sales2`//
+CREATE TRIGGER `update_period_sales2` AFTER UPDATE ON `order`
+FOR EACH ROW
+BEGIN
+	IF NEW.`accepted` = 1 THEN
+		IF EXISTS (SELECT * FROM `validity_period_sales` WHERE `package_id` = NEW.`package_id` AND `months` = NEW.`months`) THEN
+			UPDATE `validity_period_sales`
+				SET `sales` = `sales` + 1
+                WHERE `package_id` = NEW.`package_id` AND `months` = NEW.`months`;
+		ELSE
+			INSERT INTO `validity_period_sales`(`package_id`,`months`,`monthly_fee`,`sales`)
+				VALUES (NEW.`package_id`,NEW.`months`,(SELECT `monthly_fee` FROM `validity_period` WHERE `package_id` = NEW.`package_id` AND `months` = NEW.`months`),1);
+		END IF;
+	END IF;
+END//
+
+-- when new order-optional links are inserted, if the relative order is accepted update the optional sales
+DROP TRIGGER IF EXISTS `update_optional_sales1`//
+CREATE TRIGGER `update_optional_sales1` AFTER INSERT ON `order_to_optional`
+FOR EACH ROW
+BEGIN
+	IF (SELECT `accepted` FROM `order` WHERE `id` = NEW.`order_id`) = 1 THEN
+		IF EXISTS (SELECT * FROM `optional_sales` WHERE `name` = NEW.`optional`) THEN
+			UPDATE `optional_sales`
+				SET `sales` = `sales` + 1
+                WHERE `name` = NEW.`optional`;
+		ELSE
+			INSERT INTO `optional_sales`(`name`,`sales`)
+				VALUES (NEW.`optional`,1);
+        END IF;
+    END IF;
+END//
+
+-- when an order is updated and is now accepted, update the sold optionals sales data
+DROP TRIGGER IF EXISTS `update_optional_sales2`//
+CREATE TRIGGER `update_optional_sales2` AFTER UPDATE ON `order`
 FOR EACH ROW
 BEGIN
 	DECLARE `done` int DEFAULT FALSE;

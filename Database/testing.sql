@@ -1,3 +1,5 @@
+USE `db2_jpa_project`;
+
 INSERT INTO `user`(`username`,`email`,`password`,`failed_payments`)
 	VALUES('user','email@email','password1',0);
 INSERT INTO `user`(`username`,`email`,`password`,`failed_payments`)
