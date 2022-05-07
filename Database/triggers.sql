@@ -1,10 +1,10 @@
-USE `db_telco_project`;
+USE `db2_jpa_project`;
 
 DELIMITER //
 
--- when an order is accepted update the sales relative to the sold package
-DROP TRIGGER IF EXISTS `update_package_sales`//
-CREATE TRIGGER `update_package_sales` AFTER UPDATE ON `order`
+-- when an order is updated and becomes accepted, update the relative package sales data
+DROP TRIGGER IF EXISTS `update_package_sales1`//
+CREATE TRIGGER `update_package_sales1` AFTER UPDATE ON `order`
 FOR EACH ROW
 BEGIN
 	DECLARE `sales_w_o` int;
@@ -19,6 +19,40 @@ BEGIN
 		ELSE
 			INSERT INTO `package_sales`(`id`,`name`,`sales`,`sales_with_optionals`,`optionals_sales`)
 				VALUES (NEW.`package_id`,(SELECT name FROM `package` WHERE `id` = NEW.`package_id`),1,`sales_w_o`,`opt_sales`);
+		END IF;
+	END IF;
+END//
+
+-- when an order is inserted and is accepted, update the sales relative to the corresponding package (not the information
+-- about the optionals because the bridge table order_to_optional is probably not yet updated)
+DROP TRIGGER IF EXISTS `update_package_sales2`//
+CREATE TRIGGER `update_package_sales2` AFTER INSERT ON `order`
+FOR EACH ROW
+BEGIN
+	IF NEW.`accepted` = 1 THEN
+		IF EXISTS (SELECT * FROM `package_sales` WHERE `id` = NEW.`package_id`) THEN
+			UPDATE `package_sales`
+				SET `sales` = `sales` + 1
+                WHERE `id` = NEW.`package_id`;
+		ELSE
+			INSERT INTO `package_sales`(`id`,`name`,`sales`,`sales_with_optionals`,`optionals_sales`)
+				VALUES (NEW.`package_id`,(SELECT name FROM `package` WHERE `id` = NEW.`package_id`),1,0,0);
+		END IF;
+	END IF;
+END//
+
+-- when new order-optional links are inserted, update the sales relative to the order's package
+DROP TRIGGER IF EXISTS `update_package_sales3`//
+CREATE TRIGGER `update_package_sales3` AFTER INSERT ON `order_to_optional`
+FOR EACH ROW
+BEGIN
+	DECLARE `pkg_id` int;
+    SET `pkg_id` = (SELECT `package_id` FROM `order` WHERE `id` = NEW.`order_id`);    
+	IF (SELECT `accepted` FROM `order` WHERE `id` = NEW.`order_id`) = 1 THEN
+		IF EXISTS (SELECT * FROM `package_sales` WHERE `id` = `pkg_id`) THEN
+			UPDATE `package_sales`
+				SET `sales_with_optionals` = (SELECT count(DISTINCT(`order_id`)) FROM `order_to_optional` WHERE `order_id` = NEW.`order_id`), `optionals_sales` = `optionals_sales` + 1
+                WHERE `id` = `pkg_id`;
 		END IF;
 	END IF;
 END//
@@ -78,7 +112,7 @@ FOR EACH ROW
 BEGIN
 	IF NEW.`accepted` = 1 AND OLD.`accepted` = 0 THEN
 		UPDATE `user`
-			SET `failed_payments` = `failed_payments` - 1
+			SET `failed_payments` = IF( `failed_payments` > 0, `failed_payments` - 1, `failed_payments`)
 			WHERE `username` = NEW.`user`;
 		DELETE FROM `suspended_order` WHERE `id` = NEW.`id`;
 	END IF;

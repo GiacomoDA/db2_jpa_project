@@ -25,6 +25,7 @@
 				<p th:text="${o.getName()}"></p>
 			</li>
 		</ul>
+		<p th:text="${'Duration: ' + session.order.getMonths() + ' months'}"></p>
 		<p th:text="${'Total: ' + session.order.getTotal()}"></p>
 	</div>
 	

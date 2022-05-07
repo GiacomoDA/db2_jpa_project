@@ -53,13 +53,14 @@ CREATE TABLE `validity_period` (
     CHECK (`monthly_fee` >= 0.00)
 );
 
+
 DROP TABLE IF EXISTS `order`;
 CREATE TABLE `order` (
 	`id` int NOT NULL AUTO_INCREMENT,
     `creation_time` datetime NOT NULL,
     `activation_date` date NOT NULL,
     `total` decimal(10,2) NOT NULL,
-    `accepted` bit,
+    `accepted` boolean NOT NULL,
     `months` int,
     `user` varchar(30),
     `package_id` int,
@@ -180,8 +181,8 @@ CREATE TABLE `package_sales` (
     PRIMARY KEY (`id`),
     FOREIGN KEY (`id`) REFERENCES `package`(`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
     CHECK (`sales` > 0),
-    CHECK (`sales_with_optionals` > 0),
-    CHECK (`optionals_sales` > 0)
+    CHECK (`sales_with_optionals` >= 0),
+    CHECK (`optionals_sales` >= 0)
 );
 
 
@@ -194,7 +195,7 @@ CREATE TABLE `validity_period_sales` (
     PRIMARY KEY (`package_id`, `months`),
     FOREIGN KEY (`package_id`, `months`) REFERENCES `validity_period`(`package_id`, `months`) ON DELETE CASCADE ON UPDATE CASCADE,
     CHECK (`sales` > 0),
-    CHECK (`monthly_fee` > 0.00)
+    CHECK (`monthly_fee` >= 0.00)
 );
 
 
@@ -226,7 +227,7 @@ CREATE TABLE `suspended_order` (
     `total` int NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`id`) REFERENCES `order`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CHECK (`total` > 0)
+    CHECK (`total` >= 0)
 );
 
 

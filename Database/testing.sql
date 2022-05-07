@@ -56,6 +56,13 @@ UPDATE `order` SET `accepted` = 0 WHERE `id` = 3;
 UPDATE `order` SET `accepted` = 1 WHERE `id` = 1;
 UPDATE `order` SET `accepted` = 1 WHERE `id` = 2;
 
+INSERT INTO `order`(`creation_time`,`activation_date`,`total`,`months`,`user`,`package_id`,`accepted`)
+	VALUES(CURRENT_TIMESTAMP(),'2023-01-01',150,12,'user',1,TRUE);
+INSERT INTO `order_to_optional`(`order_id`,`optional`)
+	VALUES(1,'optional1');
+INSERT INTO `order_to_optional`(`order_id`,`optional`)
+	VALUES(1,'optional2');
+
 SELECT *
 FROM `user`;
 SELECT *
