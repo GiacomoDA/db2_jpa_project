@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 
 import javax.persistence.*;
 
+import org.joda.time.DateTime;
+
 import java.time.*;
 import java.util.List;
 
@@ -42,6 +44,12 @@ public class Order implements Serializable {
 	@JoinColumn(name = "package_id")
 	private ServicePackage servicePackage;
 	
+	@Column(name = "failed_payments")
+	private Integer failedPayments;
+	
+	@Column(name = "last_rejection", columnDefinition = "timestamp")
+	private LocalDateTime lastRejection;
+	
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "order_to_optional", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "optional"))
 	private List<Optional> optionals;
@@ -58,6 +66,8 @@ public class Order implements Serializable {
 		this.optionals = optionals;
 		this.creationTime = LocalDateTime.now();
 		this.accepted = false;
+		this.failedPayments = 0;
+		this.lastRejection = null;
 	}
 
 	public Integer getId() {
@@ -103,5 +113,22 @@ public class Order implements Serializable {
 	public List<Optional> getOptionals() {
 		return optionals;
 	}
+
+	public Integer getFailedPayments() {
+		return failedPayments;
+	}
+	
+	public void incrementFailedPayments() {
+		failedPayments++;
+	}
+
+	public LocalDateTime getLastRejection() {
+		return lastRejection;
+	}
+	
+	public void setLastRejection() {
+		lastRejection = LocalDateTime.now();
+	}	
+	
 	
 }

@@ -11,7 +11,7 @@ BEGIN
 	DECLARE `opt_sales` int;
     SET `opt_sales` = (SELECT count(*) FROM `order_to_optional` WHERE `order_id` = NEW.`id`);
     SET `sales_w_o` = (SELECT count(DISTINCT(`order_id`)) FROM `order_to_optional` WHERE `order_id` = NEW.`id`);
-	IF NEW.`accepted` = 1 THEN
+	IF NEW.`accepted` = 1 AND OLD.`accepted` = 0 THEN
 		IF EXISTS (SELECT * FROM `package_sales` WHERE `id` = NEW.`package_id`) THEN
 			UPDATE `package_sales`
 				SET `sales` = `sales` + 1, `sales_with_optionals` = `sales_with_optionals` + `sales_w_o`, `optionals_sales` = `optionals_sales` + `opt_sales`
@@ -59,10 +59,10 @@ END//
 
 -- when an order is updated and is now accepted, update the sales relative to the sold package validity period
 DROP TRIGGER IF EXISTS `update_period_sales1`//
-CREATE TRIGGER `update_period_sales1` AFTER INSERT ON `order`
+CREATE TRIGGER `update_period_sales1` AFTER UPDATE ON `order`
 FOR EACH ROW
 BEGIN
-	IF NEW.`accepted` = 1 THEN
+	IF NEW.`accepted` = 1 AND OLD.`accepted` = 0 THEN
 		IF EXISTS (SELECT * FROM `validity_period_sales` WHERE `package_id` = NEW.`package_id` AND `months` = NEW.`months`) THEN
 			UPDATE `validity_period_sales`
 				SET `sales` = `sales` + 1
@@ -76,7 +76,7 @@ END//
 
 -- when an accepted order is inserted, update the sales relative to the sold package validity period
 DROP TRIGGER IF EXISTS `update_period_sales2`//
-CREATE TRIGGER `update_period_sales2` AFTER UPDATE ON `order`
+CREATE TRIGGER `update_period_sales2` AFTER INSERT ON `order`
 FOR EACH ROW
 BEGIN
 	IF NEW.`accepted` = 1 THEN
@@ -117,7 +117,7 @@ BEGIN
 	DECLARE `opt` varchar(30);
 	DECLARE `cur` CURSOR FOR SELECT `optional` FROM `order_to_optional` WHERE `order_id` = NEW.`id`;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET `done` = TRUE;
-	IF NEW.`accepted` = 1 THEN
+	IF NEW.`accepted` = 1 AND OLD.`accepted` = 0 THEN
 		IF EXISTS (SELECT * FROM `order_to_optional` WHERE `order_id` = NEW.`id`) THEN
 			OPEN `cur`;
 			`label1`: LOOP
@@ -138,59 +138,51 @@ BEGIN
 	END IF;
 END//
 
--- when an order state goes from refused to accepted, update the failed_payments attribute of the user that placed the order and 
--- delete the order from the list of suspended orders
-DROP TRIGGER IF EXISTS `order_accepted`//
-CREATE TRIGGER `order_accepted` AFTER UPDATE ON `order`
-FOR EACH ROW
-BEGIN
-	IF NEW.`accepted` = 1 AND OLD.`accepted` = 0 THEN
-		UPDATE `user`
-			SET `failed_payments` = IF( `failed_payments` > 0, `failed_payments` - 1, `failed_payments`)
-			WHERE `username` = NEW.`user`;
-		DELETE FROM `suspended_order` WHERE `id` = NEW.`id`;
-	END IF;
-END//
-
--- when an order is refused, increase the failed_payments attribute of the user that placed the order and
--- add the order to the list of suspended orders
-DROP TRIGGER IF EXISTS `order_refused`//
-CREATE TRIGGER `order_refused` AFTER UPDATE ON `order`
+-- when a refused order is inserted, add it to the suspended orders table and add the user to the list of insolvent users
+DROP TRIGGER IF EXISTS `suspended_orders1`//
+CREATE TRIGGER `suspended_orders1` AFTER INSERT ON `order`
 FOR EACH ROW
 BEGIN
 	IF NEW.`accepted` = 0 THEN
-		UPDATE `user`
-			SET `failed_payments` = `failed_payments` + 1
-			WHERE `username` = NEW.`user`;
 		IF NOT EXISTS (SELECT * FROM `suspended_order` WHERE `id` = NEW.`id`) THEN            
 			INSERT INTO `suspended_order`(`id`,`user`,`total`)
 				VALUES(NEW.`id`,NEW.`user`,NEW.`total`);
 		END IF;
-		IF (SELECT `failed_payments` FROM `user` WHERE `username` = NEW.`user`) >= 3 THEN
-			IF EXISTS (SELECT * FROM `auditing_table` WHERE `user` = NEW.`user`) THEN
-				UPDATE `auditing_table`
-					SET `amount` = NEW.`total`, `last_rejection` = CURRENT_TIMESTAMP()
-                    WHERE `user` = NEW.`user`;
-			ELSE
-				INSERT INTO `auditing_table`(`user`,`email`,`amount`,`last_rejection`)
-				VALUES (NEW.`user`,(SELECT `email` FROM `user` WHERE `username` = NEW.`user`),NEW.`total`,CURRENT_TIMESTAMP());            
-			END IF;
+		IF NOT EXISTS (SELECT * FROM `insolvent_user` WHERE `user` = NEW.`user`) THEN
+			INSERT INTO `insolvent_user`(`user`,`email`)
+				VALUES(NEW.`user`,(SELECT `email` FROM `user` WHERE `username` = NEW.`user`));
+		END IF;
+	END IF;
+END//
+
+-- when an order goes from refused to accepted, remove it from suspended orders table and if the user has now zero refused orders 
+-- remove it from the list of insolvent users
+DROP TRIGGER IF EXISTS `suspended_orders2`//
+CREATE TRIGGER `suspended_orders2` AFTER UPDATE ON `order`
+FOR EACH ROW
+BEGIN
+	IF NEW.`accepted` = 1 AND OLD.`accepted` = 0 THEN
+		DELETE FROM `suspended_order`
+			WHERE `id` = NEW.`id`;
+		IF (SELECT count(*) FROM `order` WHERE `user` = NEW.`user` AND `accepted` = 0) = 0 THEN
+			DELETE FROM `insolvent_user`
+				WHERE `user` = NEW.`user`;
         END IF;
 	END IF;
 END//
 
--- when an order is accepted create the corresponding activation schedule entry
-DROP TRIGGER IF EXISTS `create_activation_schedule`//
-CREATE TRIGGER `create_activation_schedule` AFTER UPDATE ON `order`
+-- when an order goes from refused to accepted, create the corresponding activation schedule entry
+DROP TRIGGER IF EXISTS `create_activation_schedule1`//
+CREATE TRIGGER `create_activation_schedule1` AFTER UPDATE ON `order`
 FOR EACH ROW
 BEGIN
 	DECLARE `done` int DEFAULT FALSE;
 	DECLARE `opt` varchar(30);
 	DECLARE `cur` CURSOR FOR SELECT `optional` FROM `order_to_optional` WHERE `order_id` = NEW.`id`;	
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET `done` = TRUE;
-	IF NEW.`accepted` = 1 THEN
+	IF NEW.`accepted` = 1 AND OLD.`accepted` = 0 THEN
 		INSERT INTO `activation_schedule`(`user`,`package_id`,`activation_date`,`deactivation_date`)
-			VALUES(NEW.`user`,NEW.`package_id`,NEW.`activation_date`,DATE_ADD(NEW.`activation_date`, INTERVAL NEW.months MONTH));
+			VALUES(NEW.`user`,NEW.`package_id`,NEW.`activation_date`,DATE_ADD(NEW.`activation_date`, INTERVAL NEW.`months` MONTH));
 		OPEN cur;
         `label1`: LOOP
 			FETCH `cur` INTO `opt`;
@@ -203,34 +195,78 @@ BEGIN
 	END IF;
 END//
 
--- depending on the old and the new values of the attribute failed_payments in the user table
--- update the insolvent_user table accordingly
-
-/* OLD | NEW | do
-   =0  | =0  | nothing
-   >=1 | =0  | remove
-   =0  | >=1 | insert
-   >=1 | >=1 | update */
-   
-DROP TRIGGER IF EXISTS `update_insolvent_user`//
-CREATE TRIGGER `update_insolvent_user` AFTER UPDATE ON `user`
+-- when an accepted order is inserted create the corresponding activation schedule entry
+DROP TRIGGER IF EXISTS `create_activation_schedule2`//
+CREATE TRIGGER `create_activation_schedule2` AFTER INSERT ON `order`
 FOR EACH ROW
 BEGIN
-	IF NEW.`failed_payments` = 0 AND OLD.`failed_payments` >= 1 THEN
-		DELETE FROM `insolvent_user` WHERE `user` = NEW.`username`;
-	ELSE
-		IF NEW.`failed_payments` >= 1 AND OLD.`failed_payments` = 0 THEN
-			INSERT INTO `insolvent_user`(`user`,`email`,`failed_payments`)
-				VALUES(NEW.`username`,NEW.`email`,NEW.`failed_payments`);
-		ELSE
-			IF NEW.`failed_payments` <> 0 THEN
-				UPDATE `insolvent_user`
-					SET `failed_payments` = NEW.`failed_payments`
-					WHERE `user` = NEW.`username`;
+	IF NEW.`accepted` = 1 THEN
+		INSERT INTO `activation_schedule`(`user`,`package_id`,`activation_date`,`deactivation_date`)
+			VALUES(NEW.`user`,NEW.`package_id`,NEW.`activation_date`,DATE_ADD(NEW.`activation_date`, INTERVAL NEW.`months` MONTH));
+	END IF;
+END//
+
+-- when data is inserted to the order_to_optional table, if the order is accepted update the schedule_to_optional table accordingly
+DROP TRIGGER IF EXISTS `create_activation_schedule3`//
+CREATE TRIGGER `create_activation_schedule3` AFTER INSERT ON `order_to_optional`
+FOR EACH ROW
+BEGIN
+	IF (SELECT `accepted` FROM `order` WHERE `id` = NEW.`order_id`) = 1 THEN
+		INSERT INTO `schedule_to_optional`(`user`,`package_id`,`activation_date`,`optional`)
+			VALUES((SELECT `user` FROM `order` WHERE `id` = NEW.`order_id`),(SELECT `package_id` FROM `order` WHERE `id` = NEW.`order_id`),(SELECT `activation_date` FROM `order` WHERE `id` = NEW.`order_id`),NEW.`optional`);
+	END IF;
+END//
+
+-- when the number of failed payments in an order is updated, update the user's failed payments attribute and update
+-- the auditing table accordingly
+DROP TRIGGER IF EXISTS `update_auditing_table1`//
+CREATE TRIGGER `update_auditing_table1` AFTER UPDATE ON `order`
+FOR EACH ROW
+BEGIN
+	DECLARE `new_fp` int;
+	IF NEW.`failed_payments` > OLD.`failed_payments` THEN
+		SET `new_fp` = (SELECT sum(`failed_payments`) FROM `order` WHERE `user` = NEW.`user`);
+		UPDATE `user`
+			SET `failed_payments` = `new_fp`
+            WHERE `username` = NEW.`user`;
+		IF `new_fp` >= 3 THEN
+			IF NOT EXISTS (SELECT * FROM `auditing_table` WHERE `user` = NEW.`user`) THEN
+				INSERT INTO `auditing_table`(`user`,`email`,`amount`,`last_rejection`)
+					VALUES(NEW.`user`,(SELECT `email` FROM `user` WHERE `username` = NEW.`user`),NEW.`total`,NEW.`last_rejection`);
+			ELSE
+				UPDATE `auditing_table`
+					SET `amount` = NEW.`total`, `last_rejection` = NEW.`last_rejection`
+                    WHERE `user` = NEW.`user`;
 			END IF;
 		END IF;
 	END IF;
 END//
+
+-- when a new order is inserted, if it has failed payments associated, update the user's failed payments attribute and update
+-- the auditing table accordingly
+DROP TRIGGER IF EXISTS `update_auditing_table2`//
+CREATE TRIGGER `update_auditing_table2` AFTER INSERT ON `order`
+FOR EACH ROW
+BEGIN
+	DECLARE `new_fp` int;
+	IF NEW.`failed_payments` > 0 THEN
+		SET `new_fp` = (SELECT sum(`failed_payments`) FROM `order` WHERE `user` = NEW.`user`);
+		UPDATE `user`
+			SET `failed_payments` = `new_fp`
+            WHERE `username` = NEW.`user`;
+		IF `new_fp` >= 3 THEN
+			IF NOT EXISTS (SELECT * FROM `auditing_table` WHERE `user` = NEW.`user`) THEN
+				INSERT INTO `auditing_table`(`user`,`email`,`amount`,`last_rejection`)
+					VALUES(NEW.`user`,(SELECT `email` FROM `user` WHERE `username` = NEW.`user`),NEW.`total`,NEW.`last_rejection`);
+			ELSE
+				UPDATE `auditing_table`
+					SET `amount` = NEW.`total`, `last_rejection` = NEW.`last_rejection`
+                    WHERE `user` = NEW.`user`;
+			END IF;
+		END IF;
+	END IF;
+END//
+
 
 DELIMITER ;
 

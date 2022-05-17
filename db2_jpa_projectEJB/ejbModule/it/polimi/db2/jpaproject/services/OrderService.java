@@ -53,6 +53,10 @@ public class OrderService {
 	// random payment outcome
 	public Boolean confirmOrder(Order order, User user) {
 		order.setAccepted(PaymentService.paymentResult());
+		if (!order.isAccepted()) {
+			order.incrementFailedPayments();
+			order.setLastRejection();
+		}
 		if (order.getUser() == null) {
 			order.setUser(user);
 			em.persist(order);
@@ -66,6 +70,10 @@ public class OrderService {
 	// payment outcome decided by caller
 	public Boolean confirmOrder(Order order, User user, Boolean outcome) {
 		order.setAccepted(outcome);
+		if (!outcome) {
+			order.incrementFailedPayments();
+			order.setLastRejection();
+		}
 		if (order.getUser() == null) {
 			order.setUser(user);
 			em.persist(order);

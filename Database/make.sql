@@ -61,15 +61,17 @@ CREATE TABLE `order` (
     `activation_date` date NOT NULL,
     `total` decimal(10,2) NOT NULL,
     `accepted` boolean NOT NULL,
-    `months` int,
+    `months` int NOT NULL,
     `user` varchar(30),
     `package_id` int,
+    `failed_payments` int NOT NULL,
+    `last_rejection` datetime,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`package_id`) REFERENCES `package` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY (`months`,`package_id`) REFERENCES `validity_period` (`months`,`package_id`) ON DELETE NO ACTION ON UPDATE CASCADE,
     FOREIGN KEY (`user`) REFERENCES `user` (`username`) ON DELETE SET NULL ON UPDATE CASCADE,
     CHECK (`total` >= 0.00),
-    CHECK (`total` >= 0)
+    CHECK (`failed_payments` >= 0)
 );
 
 
@@ -213,10 +215,8 @@ DROP TABLE IF EXISTS `insolvent_user`;
 CREATE TABLE `insolvent_user` (
 	`user` varchar(30) NOT NULL,
     `email` varchar(30) NOT NULL,
-    `failed_payments` smallint NOT NULL,
     PRIMARY KEY (`user`),
-    FOREIGN KEY (`user`) REFERENCES `user`(`username`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CHECK (`failed_payments` > 0)
+    FOREIGN KEY (`user`) REFERENCES `user`(`username`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
