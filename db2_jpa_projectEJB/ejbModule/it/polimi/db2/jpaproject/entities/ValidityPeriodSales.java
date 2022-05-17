@@ -7,8 +7,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "validity_period_sales", schema = "db2_jpa_project")
-@NamedQuery(name = "ValidityPeriodSales.findAll", query = "SELECT v FROM ValidityPeriodSales v")
-@NamedQuery(name = "ValidityPeriodSales.findSpecific", query = "SELECT v FROM ValidityPeriodSales v WHERE v.packageId = ?1 AND v.months = ?2")
+@NamedQuery(name = "ValidityPeriodSales.findByPackage", query = "SELECT v FROM ValidityPeriodSales v WHERE v.packageId = ?1")
 public class ValidityPeriodSales implements Serializable {
 	private static final long serialVersionUID = 1L;
 

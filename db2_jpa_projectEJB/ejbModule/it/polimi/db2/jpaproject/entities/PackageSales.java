@@ -47,8 +47,12 @@ public class PackageSales implements Serializable {
 		return optionalSales;
 	}
 	
-	public Float AverageOptionalsPerPackage() {
-		return (float) optionalSales / sales;
+	public Float averageOptionalsPerPackage() {
+		return Float.valueOf(optionalSales) / Float.valueOf(sales);
+	}
+	
+	public Integer salesWithoutOptionals() {
+		return sales - salesWithOptionals;
 	}
 	
 }

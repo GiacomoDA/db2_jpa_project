@@ -19,22 +19,13 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import it.polimi.db2.jpaproject.services.*;
 import it.polimi.db2.jpaproject.entities.*;
 
-@WebServlet("/SalesReport")
-public class GoToSalesReport extends HttpServlet {
+@WebServlet("/OptionalEditor")
+public class GoToOptionalEditor extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private TemplateEngine templateEngine;
-	
-	@EJB(name = "it.polimi.db2.mission.services/SalesServices")
-	private SalesServices salesServices;
-	
-	@EJB(name = "it.polimi.db2.mission.services/UserService")
-	private UserService userService;
-	
-	@EJB(name = "it.polimi.db2.mission.services/SuspendedOrder")
-	private OrderService orderService;
 
-	public GoToSalesReport() {
+	public GoToOptionalEditor() {
 		super();
 	}
 
@@ -48,29 +39,10 @@ public class GoToSalesReport extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<PackageSales> packageSales = null;
-		List<OptionalSales> optionalBestSeller = null;
-		List<InsolventUser> insolventUsers = null;
-		List<SuspendedOrder> suspendedOrder = null;
 
-		try {
-			packageSales = salesServices.findAllPackagePurchase();
-			optionalBestSeller = salesServices.findBestSeller();
-			insolventUsers = userService.findAllInsolventUser();
-			suspendedOrder = orderService.suspendedOrderList();
-		} catch (Exception e) {
-			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to get data");
-			return;
-		}
-
-		String path = "/WEB-INF/SalesReport.html";
+		String path = "/WEB-INF/OptionalEditor.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext context = new WebContext(request, response, servletContext, request.getLocale());
-		context.setVariable("packageSales", packageSales);
-		context.setVariable("bestSeller", optionalBestSeller);
-		context.setVariable("insolventUserList", insolventUsers);
-		context.setVariable("suspendedOrderList", suspendedOrder);
 
 		templateEngine.process(path, context, response.getWriter());
 	}

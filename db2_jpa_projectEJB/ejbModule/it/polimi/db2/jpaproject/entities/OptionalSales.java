@@ -9,7 +9,6 @@ import java.util.List;
 @Table(name = "optional_sales", schema = "db2_jpa_project")
 @NamedQuery(name = "OptionalSales.findAll", query = "SELECT o FROM OptionalSales O")
 
-
 public class OptionalSales implements Serializable {
 	private static final long serialVersionUID = 1L;
 
