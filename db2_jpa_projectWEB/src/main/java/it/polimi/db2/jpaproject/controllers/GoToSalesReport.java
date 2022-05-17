@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -20,16 +19,22 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import it.polimi.db2.jpaproject.services.*;
 import it.polimi.db2.jpaproject.entities.*;
 
-@WebServlet("/OrderSummary")
-public class GoToOrderSummary extends HttpServlet {
+@WebServlet("/SalesReport")
+public class GoToSalesReport extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private TemplateEngine templateEngine;
 	
-	@EJB(name = "it.polimi.db2.mission.services/OrderService")
+	@EJB(name = "it.polimi.db2.mission.services/SalesServices")
+	private SalesServices salesServices;
+	
+	@EJB(name = "it.polimi.db2.mission.services/UserService")
+	private UserService userService;
+	
+	@EJB(name = "it.polimi.db2.mission.services/SuspendedOrder")
 	private OrderService orderService;
 
-	public GoToOrderSummary() {
+	public GoToSalesReport() {
 		super();
 	}
 
@@ -43,32 +48,32 @@ public class GoToOrderSummary extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		int orderId;
-		
-		try {
-			String packageIdString = StringEscapeUtils.escapeJava(request.getParameter("orderId"));
-			if (packageIdString == null || packageIdString.isEmpty())
-				throw new Exception("Missing or empty orderId value");
-			orderId = Integer.parseInt(packageIdString);
+		List<ValidityPeriodSales> validitySales = null;
+		List<PackageSales> packageSales = null;
+		List<OptionalSales> optionalSales = null;
+		List<InsolventUser> insolventUsers = null;
+		List<SuspendedOrder> suspendedOrder = null;
+
+		try {	
+			validitySales = salesServices.findAllValidityPurchase();
+			packageSales = salesServices.findAllPackagePurchase();
+			optionalSales = salesServices.findAllOptionalPurchases();
+			insolventUsers = userService.findAllInsolventUser();
+			suspendedOrder = orderService.suspendedOrderList();
 		} catch (Exception e) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing orderId value");
-			return;
-		}
-		
-		Order order;
-		
-		try {			
-			order = orderService.findOrderById(orderId);
-		} catch (Exception e) {
+			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to get data");
 			return;
 		}
-		
-		request.getSession().setAttribute("order", order);
-		
-		String path = "/WEB-INF/OrderSummary.html";
+
+		String path = "/WEB-INF/SalesReport.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext context = new WebContext(request, response, servletContext, request.getLocale());
+		context.setVariable("validitySales", validitySales);
+		context.setVariable("packageSales", packageSales);
+		context.setVariable("optionalSales", optionalSales);
+		context.setVariable("insolventUserList", insolventUsers);
+		context.setVariable("suspendedOrderList", suspendedOrder);
 
 		templateEngine.process(path, context, response.getWriter());
 	}

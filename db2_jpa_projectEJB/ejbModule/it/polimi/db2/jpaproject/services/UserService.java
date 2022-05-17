@@ -5,7 +5,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.NonUniqueResultException;
-import it.polimi.db2.jpaproject.entities.User;
+import it.polimi.db2.jpaproject.entities.*;
 import it.polimi.db2.jpaproject.exceptions.CredentialsException;
 import java.util.List;
 
@@ -45,6 +45,10 @@ public class UserService {
 		User user = new User(username, email, password);
 		em.persist(user);
 		em.flush();
+	}
+	
+	public List<InsolventUser> findAllInsolventUser() {
+		return em.createNamedQuery("InsolventUser.findAll", InsolventUser.class).getResultList();
 	}
 
 }

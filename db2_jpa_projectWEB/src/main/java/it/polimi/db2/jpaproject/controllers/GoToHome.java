@@ -57,7 +57,7 @@ public class GoToHome extends HttpServlet {
 		}
 		
 		if (request.getSession().getAttribute("user") != null) {
-			orders = orderService.FindRejectedOrders((User) request.getSession().getAttribute("user"));
+			orders = orderService.findRejectedOrders((User) request.getSession().getAttribute("user"));
 		}
 
 		String path = "/WEB-INF/Home.html";

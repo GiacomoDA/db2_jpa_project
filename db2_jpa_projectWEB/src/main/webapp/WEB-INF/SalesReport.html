@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Sales Report</title>
+<link rel="stylesheet" type="text/css" media="all"
+	href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
+</head>
+<body>
+	<br>
+	<h1>Sales Report</h1>
+	<br>
+
+	<table>
+		<thead>
+			<tr>
+				<th>Package Id</th>
+				<th>Sales</th>
+				<th>Sales W/O Optionals</th>
+				<th>Average Optionals</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="p : ${packageSales}">
+				<td><a th:text="${p.getName()}"></a></td>
+				<td th:text="${p.getSales()}"></td>
+				<td th:text="${p.getSales() - p.getSalesWithOptionals()}"></td>
+				<td th:text="${p.AverageOptionalsPerPackage()}"></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h1>Insolvent Users</h1>
+
+	<div th:if="${insolventUserList == null || insolventUserList.isEmpty()}">
+		<i>There are no insolvent users</i>
+	</div>
+
+	<table>
+		<tr>
+			<th>User</th>
+		</tr>
+		<tr th:each="insolventUser: ${insolventUserList}">
+			<td th:text="${insolventUser.getUser()}"></td>
+		</tr>
+	</table>
+	<br>
+
+	<h1>Suspended Orders</h1>
+
+	<div th:if="${suspendedOrderList == null || suspendedOrderList.isEmpty()}">
+		<i>There are no suspended orders</i>
+	</div>
+
+	<table>
+		<tr>
+			<th>User</th>
+			<th>Order Id</th>
+			<th>Amount</th>
+		</tr>
+		<tr th:each="suspendedOrder: ${suspendedOrderList}">
+			<td th:text="${suspendedOrder.getUser()}"></td>
+			<td th:text="${suspendedOrder.getId()}"></td>
+			<td th:text="${suspendedOrder.getTotal()}"></td>
+		</tr>
+	</table>
+	<br>
+
+	<h1>Optional Product Best Seller</h1>
+
+
+</body>
+</html>

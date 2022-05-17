@@ -18,12 +18,16 @@ public class OrderService {
 	public OrderService() {
 	}
 
-	public List<Order> FindRejectedOrders(User user) {
+	public List<Order> findRejectedOrders(User user) {
 		return em.createNamedQuery("Order.findRejectedByUser", Order.class).setParameter(1, user).getResultList();
 	}
 
-	public Order FindOrderById(int id) {
+	public Order findOrderById(int id) {
 		return em.createNamedQuery("Order.findById", Order.class).setParameter(1, id).getSingleResult();
+	}
+	
+	public List<SuspendedOrder> suspendedOrderList() {
+		return em.createNamedQuery("SuspendedOrder.findAll", SuspendedOrder.class).getResultList();
 	}
 
 	public Order createOrder(int packageId, LocalDate activationDate, int months, List<String> opt) {

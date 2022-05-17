@@ -1,0 +1,30 @@
+<!DOCTYPE html>	
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Home</title>
+<link rel="stylesheet" type="text/css" media="all"
+	href="/..CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
+</head>
+<body>
+	<div class="right">
+		<a th:href="@{/Home}">Home</a><br>
+		<a th:href="@{/UserLogin}">User Login</a>
+	</div>
+	
+	<div class="sideBySide">
+		<h3>Employee Login</h3>
+		<form th:action="@{/EmployeeLogin}" method="POST">
+			<label>Username</label><br>
+			<input type="text" name="username" required> <br>
+			<label>Password</label><br>
+			<input type="password" name="password" required><br><br>
+			<input type="submit" value="Login">
+			<div class="errorMessage">
+				<p class="errorMessage" th:text="${errorMessageLogin}"></p>
+			</div>
+		</form>
+	</div>
+
+</body>
+</html>

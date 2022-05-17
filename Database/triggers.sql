@@ -206,7 +206,7 @@ BEGIN
 	END IF;
 END//
 
--- when data is inserted to the order_to_optional table, if the order is accepted update the schedule_to_optional table accordingly
+-- when data is inserted into the order_to_optional table, if the order is accepted update the schedule_to_optional table accordingly
 DROP TRIGGER IF EXISTS `create_activation_schedule3`//
 CREATE TRIGGER `create_activation_schedule3` AFTER INSERT ON `order_to_optional`
 FOR EACH ROW

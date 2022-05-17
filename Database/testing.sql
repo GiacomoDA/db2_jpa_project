@@ -5,6 +5,9 @@ INSERT INTO `user`(`username`,`email`,`password`,`failed_payments`)
 INSERT INTO `user`(`username`,`email`,`password`,`failed_payments`)
 	VALUES('a','a@a','a',0);
     
+INSERT INTO `employee`(`username`,`email`,`password`)
+	VALUES('e','e@e','e');
+    
 INSERT INTO `optional`(`name`,`monthly_fee`)
 	VALUES('optional1',10.50);    
 INSERT INTO `optional`(`name`,`monthly_fee`)

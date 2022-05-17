@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Package Editor</title>
+<link rel="stylesheet" type="text/css" media="all"
+	href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
+</head>
+<body>
+	<div class="right" th:if="${session.user}">
+		<p th:text="${'Logged in as ' + session.user.username}"></p>
+	</div>
+	<div class="right">
+		<a th:text="${session.user} ? 'Logout' : 'Login'" th:href=@{/Logout}></a>
+	</div>
+	<div class="right">
+		<a th:href="@{/Home}">Home</a>
+	</div>
+	
+	<h1>Create a Package</h1>
+	
+	<form th:action="@{/CreatePackage}">
+        <label>Package name</label>
+		<input type="text" name="name" required><br>
+        <h3>Services:</h3>
+        <input type="checkbox" name="fixedPhone" value="fixedPhone" id="fixedPhone">
+        <label for="fixedPhone">Fixed Phone</label><br>
+
+        <input type="checkbox" name="mobilePhone" value="mobilePhone" id="mobilePhone">
+        <label for="mobilePhone">Mobile Phone</label><br>
+        <label>Minutes</label>
+        <input type="number" name="MPMinutes" min="0"><br>
+        <label>Extra minutes fee</label>
+        <input type="number" name="MPMinutesFee" min="0" step="0.01"><br>
+        <label>SMS</label>
+        <input type="number" name="MPSMS" min="0"><br>
+        <label>Extra SMS fee</label>
+        <input type="number" name="MPSMSFee" min="0" step="0.01"><br>
+
+        <input type="checkbox" name="fixedInternet" value="fixedInternet" id="fixedInternet">
+        <label for="fixedInternet">Fixed Internet</label><br>
+        <label>Gigabytes</label>
+        <input type="number" name="FIGB" min="0"><br>
+        <label>Extra gigabytes fee</label>
+        <input type="number" name="FIGBFee" min="0" step="0.01"><br>
+
+        <input type="checkbox" name="mobileInternet" value="mobileInternet" id="mobileInternet">
+        <label for="mobileInternet">Mobile Internet</label><br>
+        <label>Gigabytes</label>
+        <input type="number" name="MIGB" min="0"><br>
+        <label>Extra gigabytes fee</label>
+        <input type="number" name="MIGBFee" min="0" step="0.01"><br>
+
+        <input type="submit" value="Confirm">
+	</form>
+	
+</body>
+</html>
