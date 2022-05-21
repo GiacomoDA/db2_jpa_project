@@ -7,11 +7,8 @@
 	href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
 </head>
 <body>
-	<div class="right" th:if="${session.user}">
-		<p th:text="${'Logged in as ' + session.user.username}"></p>
-	</div>
 	<div class="right">
-		<a th:text="${session.user} ? 'Logout' : 'Login'" th:href=@{/Logout}></a>
+		<a th:href=@{/Logout}>Logout</a>
 	</div>
 	<div class="right">
 		<a th:href="@{/SalesReport}">Home</a>

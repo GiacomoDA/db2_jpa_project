@@ -1,9 +1,7 @@
 package it.polimi.db2.jpaproject.controllers;
 
 import java.io.IOException;
-import java.util.List;
 
-import javax.ejb.EJB;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,9 +13,6 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
-
-import it.polimi.db2.jpaproject.services.*;
-import it.polimi.db2.jpaproject.entities.*;
 
 @WebServlet("/OptionalEditor")
 public class GoToOptionalEditor extends HttpServlet {
