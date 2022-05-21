@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Table(name = "package", schema = "db2_jpa_project")
 @NamedQueries({
 		@NamedQuery(name = "ServicePackage.findAll", query = "SELECT p FROM ServicePackage p"),
+		@NamedQuery(name = "ServicePackage.findByName", query = "SELECT p FROM ServicePackage p WHERE p.name = ?1"),
 		@NamedQuery(name = "ServicePackage.findById", query = "SELECT p FROM ServicePackage p WHERE p.id = ?1")})
 
 public class ServicePackage implements Serializable {

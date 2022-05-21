@@ -22,4 +22,7 @@ public class PackageService {
 		return em.createNamedQuery("ServicePackage.findById", ServicePackage.class).setParameter(1, packageId).getSingleResult();
 	}
 
+	public ServicePackage findPackageByName(String name) {
+		return em.createNamedQuery("ServicePackage.findByName", ServicePackage.class).setParameter(1, name).getSingleResult();
+	}
 }
