@@ -32,6 +32,12 @@ public class CreatePackage extends HttpServlet {
 	@EJB(name = "it.polimi.db2.jpaproject.services/PackageService")
 	private PackageService packageService;
 
+	@EJB(name = "it.polimi.db2.jpaproject.services/ServiceService")
+	private ServiceService serviceService;
+
+	@EJB(name = "it.polimi.db2.jpaproject.services/OptionalService")
+	private OptionalService optionalService;
+
 	public CreatePackage() {
 		super();
 	}
@@ -47,40 +53,75 @@ public class CreatePackage extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		Integer id = null; 								//how do I assign it since is not up to the user?
-		String name = null;
-		Boolean fixedPhone = null;
+		String name;
+		List<String> services;
+		List<String> validityPeriods;
+		List<String> optionals;
 		MobilePhone mobilePhone = null;
+		Integer minutes = null;
+		Integer sms = null;
+		BigDecimal mFee = null;
+		BigDecimal sFee = null;
 		FixedInternet fixedInternet = null;
+		Integer fxGigabytes = null;
+		BigDecimal fxGFee = null;
 		MobileInternet mobileInternet = null;
-		List<ValidityPeriod> validityPeriods = null;
-		List<Optional> optionals = null;
+		Integer mbGigabytes = null;
+		BigDecimal mbGFee = null;
 
 
 		try {
 			name = StringEscapeUtils.escapeJava(request.getParameter("name"));
+			services = Arrays.asList(Optional.ofNullable(request.getParameterValues("service")).orElse(new String[0]));
+			optionals = Arrays.asList(Optional.ofNullable(request.getParameterValues("optional")).orElse(new String[0]));
 			//mobilePhone
-			String minutes = StringEscapeUtils.escapeJava(request.getParameter("MPMinutes"));
-			String sms = StringEscapeUtils.escapeJava(request.getParameter("MPSMS"));
-			String mFee = StringEscapeUtils.escapeJava(request.getParameter("MPMinutesFee"));
-			String sFee = StringEscapeUtils.escapeJava(request.getParameter("MPSMSFee"));
+			if (services.contains("mobilePhone")) {
+				minutes = Integer.valueOf(StringEscapeUtils.escapeJava(request.getParameter("MPMinutes")));
+				sms = Integer.valueOf(StringEscapeUtils.escapeJava(request.getParameter("MPSMS")));
+				mFee = new BigDecimal(StringEscapeUtils.escapeJava(request.getParameter("MPMinutesFee")));
+				sFee = new BigDecimal(StringEscapeUtils.escapeJava(request.getParameter("MPSMSFee")));
+				mobilePhone = serviceService.newMobilePhone(minutes, sms, sFee, sFee);
+			}
 			//fixedInternet
-			String fxGigabytes = StringEscapeUtils.escapeJava(request.getParameter("FIGB"));
-			String fxGFee = StringEscapeUtils.escapeJava(request.getParameter("FIGBFee"));
+			if (services.contains("fixedInternet")) {
+				fxGigabytes = Integer.valueOf(StringEscapeUtils.escapeJava(request.getParameter("FIGB")));
+				fxGFee = new BigDecimal(StringEscapeUtils.escapeJava(request.getParameter("FIGBFee")));
+				fixedInternet = serviceService.newFixedInternet(fxGigabytes, fxGFee);
+			}
 			//mobileInternet
-			String mbGigabytes = StringEscapeUtils.escapeJava(request.getParameter("MIGB"));
-			String mbGFee = StringEscapeUtils.escapeJava(request.getParameter("MIGBFee"));
-			List<String> isFixed = Arrays.asList(Optional.ofNullable(request.getParameterValues("optional")).orElse(new String[0]));
+			if (services.contains("mobileInternet")) {
+				mbGigabytes = Integer.valueOf(StringEscapeUtils.escapeJava(request.getParameter("MIGB")));
+				mbGFee = new BigDecimal(StringEscapeUtils.escapeJava(request.getParameter("MIGBFee")));
+				mobileInternet = serviceService.newMobileInternet(mbGigabytes, mbGFee);
+			}
 			if (name == null || name.isEmpty())
 				throw new Exception("Missing or empty value");
+		} catch (NumberFormatException numberException) {
+			request.getSession().setAttribute("errorMessage", "Invalid value");
+			String path = getServletContext().getContextPath() + "/GoToPackageEditor";
+			response.sendRedirect(path);
+			return;
 		} catch (Exception e) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing needed values");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or invalid values");
 			return;
 		}
+		
+		try {
+			if (packageService.findPackageByName(name) != null) {
+				request.getSession().setAttribute("errorMessage", "This package name is taken");
+				String path = getServletContext().getContextPath() + "/PackageEditor";
+				response.sendRedirect(path);
+			}
+		} catch (Exception e) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or invalid values");
+			return;	
+		}
 
+		packageService.addPackage(name, services.contains("fixedPhone"), mobilePhone, fixedInternet, mobileInternet, null, optionals);
+		
 		String path;
 
-		try {
+		/*try {
 			if (packageService.findPackageByName(name) != null) {
 				throw new Exception("Already existing Package!");
 			}
@@ -101,8 +142,7 @@ public class CreatePackage extends HttpServlet {
 			context.setVariable("errorOptionalCreation", "Already existing Optional!");
 			path = "/WEB-INF/OptionalEditor.html";
 			templateEngine.process(path, context, response.getWriter());
-		}
-
+		}*/
 	}
 
 	public void destroy() {

@@ -44,15 +44,15 @@ public class CreateOptional extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String optionalName = null;
-		String monthlyFee = null;
+		BigDecimal monthlyFee = null;
 
 		try {
 			optionalName = StringEscapeUtils.escapeJava(request.getParameter("name"));
-			monthlyFee = StringEscapeUtils.escapeJava(request.getParameter("fee"));
-			if (optionalName == null || monthlyFee == null || optionalName.isEmpty() || monthlyFee.isEmpty())
+			monthlyFee = new BigDecimal(StringEscapeUtils.escapeJava(request.getParameter("fee")));
+			if (optionalName == null || optionalName.isEmpty())
 				throw new Exception("Missing or empty value");
 		} catch (Exception e) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing needed values");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or invalid values");
 			return;
 		}
 
@@ -62,8 +62,7 @@ public class CreateOptional extends HttpServlet {
 			if (optionalService.checkOptionals(optionalName) != null && !optionalService.checkOptionals(optionalName).isEmpty()) {
 				throw new Exception("Already existing Optional!");
 			}
-			BigDecimal fee = new BigDecimal(monthlyFee);
-			optionalService.addOptional(optionalName, fee);
+			optionalService.addOptional(optionalName, monthlyFee);
 
 			path = "/WEB-INF/OptionalEditor.html";
 			ServletContext servletContext = getServletContext();

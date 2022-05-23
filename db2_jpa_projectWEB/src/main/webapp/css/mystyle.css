@@ -1,11 +1,19 @@
 table, th, td {
   border-collapse: collapse;
-  border: 1px solid #ffffff;
+  border: 1px solid #FFFFFF;
 }
 
 table, td {
   padding: 5px 10px 5px 10px;
   text-align: center;
+}
+
+tbody:nth-child(even) {background: #282828}
+tbody:nth-child(odd) {background: #363636}
+
+thead {
+  background: var(--body-color);
+  color: var(--body-bg);
 }
 
 th {

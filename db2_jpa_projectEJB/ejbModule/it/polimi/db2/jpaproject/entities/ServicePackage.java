@@ -24,28 +24,28 @@ public class ServicePackage implements Serializable {
 	@Column(name = "fixed_phone")
 	private Boolean fixedPhone;
 
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "servicePackage")
+	@OneToOne(fetch = FetchType.EAGER, mappedBy = "servicePackage", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
 	private MobilePhone mobilePhone;
 
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "servicePackage")
+	@OneToOne(fetch = FetchType.EAGER, mappedBy = "servicePackage", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
 	private FixedInternet fixedInternet;
 	
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "servicePackage")
+	@OneToOne(fetch = FetchType.EAGER, mappedBy = "servicePackage", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
 	private MobileInternet mobileInternet;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "servicePackage", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
 	@OrderBy("months ASC")
 	private List<ValidityPeriod> validityPeriods;
 	
-	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "package_to_optional", joinColumns = @JoinColumn(name = "package_id"), inverseJoinColumns = @JoinColumn(name = "optional"))
-	private List<Optional> optionals;
+	private List<OptionalProduct> optionals;
 	
 	public ServicePackage() {
 	}
 
 	public ServicePackage(String name, Boolean fixedPhone, MobilePhone mobilePhone, FixedInternet fixedInternet,
-			MobileInternet mobiletInternet, List<ValidityPeriod> validityPeriods, List<Optional> optionals) {
+			MobileInternet mobiletInternet, List<ValidityPeriod> validityPeriods, List<OptionalProduct> optionals) {
 		this.name = name;
 		this.fixedPhone = fixedPhone;
 		this.mobilePhone = mobilePhone;
@@ -79,7 +79,7 @@ public class ServicePackage implements Serializable {
 		return validityPeriods;
 	}
 
-	public List<Optional> getOptionals() {
+	public List<OptionalProduct> getOptionals() {
 		return optionals;
 	}
 	

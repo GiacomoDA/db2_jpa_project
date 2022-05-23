@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "order", schema = "db2_jpa_project")
 @NamedQueries({
-	@NamedQuery(name = "Order.findRejectedByUser", query = "SELECT o FROM Order o WHERE o.accepted = false AND o.user = ?1"),
+	@NamedQuery(name = "Order.findRejectedByUser", query = "SELECT o FROM Order o WHERE o .accepted = false AND o.user = ?1"),
 	@NamedQuery(name = "Order.findById", query = "SELECT o FROM Order o WHERE o.id = ?1")})
 
 public class Order implements Serializable {
@@ -52,12 +52,12 @@ public class Order implements Serializable {
 	
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "order_to_optional", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "optional"))
-	private List<Optional> optionals;
+	private List<OptionalProduct> optionals;
 
 	public Order() {
 	}
 
-	public Order(LocalDate activationDate, BigDecimal total, Integer months, ServicePackage servicePackage, List<Optional> optionals) {
+	public Order(LocalDate activationDate, BigDecimal total, Integer months, ServicePackage servicePackage, List<OptionalProduct> optionals) {
 		super();
 		this.activationDate = activationDate;
 		this.total = total;
@@ -110,7 +110,7 @@ public class Order implements Serializable {
 		return servicePackage;
 	}
 
-	public List<Optional> getOptionals() {
+	public List<OptionalProduct> getOptionals() {
 		return optionals;
 	}
 

@@ -24,10 +24,17 @@ public class FixedInternet implements Serializable {
 	public FixedInternet() {
 	}
 
-	public FixedInternet(ServicePackage servicePackage, Integer gigabytes, BigDecimal gigabytesFee) {
-		this.servicePackage = servicePackage;
+	public FixedInternet(Integer gigabytes, BigDecimal gigabytesFee) {
 		this.gigabytes = gigabytes;
 		this.gigabytesFee = gigabytesFee;
+	}
+
+	public ServicePackage getServicePackage() {
+		return servicePackage;
+	}
+
+	public void setServicePackage(ServicePackage servicePackage) {
+		this.servicePackage = servicePackage;
 	}
 
 	public Integer getGigabytes() {

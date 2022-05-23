@@ -32,7 +32,7 @@ public class OrderService {
 
 	public Order createOrder(int packageId, LocalDate activationDate, int months, List<String> opt) {
 		BigDecimal total;
-		List<Optional> optionals = new ArrayList<>();
+		List<OptionalProduct> optionals = new ArrayList<>();
 
 		ServicePackage servicePackage = em.createNamedQuery("ServicePackage.findById", ServicePackage.class)
 				.setParameter(1, packageId).getSingleResult();
@@ -43,7 +43,7 @@ public class OrderService {
 		total = BigDecimal.valueOf(validityPeriod.getMonths()).multiply(validityPeriod.getMonthlyFee());
 
 		if (!opt.isEmpty()) {
-			optionals = em.createNamedQuery("Optional.findOptionals", Optional.class).setParameter(1, opt)
+			optionals = em.createNamedQuery("Optional.findOptionals", OptionalProduct.class).setParameter(1, opt)
 					.getResultList();
 			total = total.add(optionals.stream().map(o -> o.getMonthlyFee()).reduce(BigDecimal.ZERO, BigDecimal::add)
 					.multiply(BigDecimal.valueOf(validityPeriod.getMonths())));

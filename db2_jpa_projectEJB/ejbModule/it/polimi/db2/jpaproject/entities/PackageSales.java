@@ -26,6 +26,10 @@ public class PackageSales implements Serializable {
 	
 	@Column (name = "optionals_sales")
 	private Integer optionalSales;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "packageSales", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
+	@OrderBy("months ASC")
+	private List<ValidityPeriodSales> validityPeriodsSales;
 
 	public Integer getId() {
 		return id;
@@ -47,7 +51,13 @@ public class PackageSales implements Serializable {
 		return optionalSales;
 	}
 	
+	public List<ValidityPeriodSales> getValidityPeriodsSales() {
+		return validityPeriodsSales;
+	}
+
 	public Float averageOptionalsPerPackage() {
+		if (sales == 0)
+			return 0.0f;
 		return Float.valueOf(optionalSales) / Float.valueOf(sales);
 	}
 	

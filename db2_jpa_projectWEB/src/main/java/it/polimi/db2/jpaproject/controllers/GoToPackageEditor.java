@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -24,6 +25,9 @@ public class GoToPackageEditor extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private TemplateEngine templateEngine;
+	
+	@EJB(name = "it.polimi.db2.mission.services/OptionalService")
+	private OptionalService optionalService;
 
 	public GoToPackageEditor() {
 		super();
@@ -39,10 +43,24 @@ public class GoToPackageEditor extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		List<OptionalProduct> optionals;
+		String error = null;		
+
+		error = StringEscapeUtils.escapeJava(request.getParameter("error"));
+
+		try {			
+			optionals = optionalService.findAll();
+		} catch (Exception e) {
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to get data");
+			return;
+		}
 
 		String path = "/WEB-INF/PackageEditor.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext context = new WebContext(request, response, servletContext, request.getLocale());
+		context.setVariable("optionals", optionals);
+		context.setVariable("errorMessage", request.getSession().getAttribute("errorMessage"));
+		request.getSession().removeAttribute("errorMessage");
 
 		templateEngine.process(path, context, response.getWriter());
 	}

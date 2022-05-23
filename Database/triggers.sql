@@ -2,6 +2,33 @@ USE `db2_jpa_project`;
 
 DELIMITER //
 
+-- when a package is inserted, create the relative entry in package_sales
+DROP TRIGGER IF EXISTS `create_package_sales`//
+CREATE TRIGGER `create_package_sales` AFTER INSERT ON `package`
+FOR EACH ROW
+BEGIN
+	INSERT INTO `package_sales`(`id`,`name`,`sales`,`sales_with_optionals`,`optionals_sales`)
+		VALUES (NEW.`id`,NEW.`name`,0,0,0);
+END//
+
+-- when a new package is inserted, create the relative entry in package_sales
+DROP TRIGGER IF EXISTS `create_vp_sales`//
+CREATE TRIGGER `create_vp_sales` AFTER INSERT ON `validity_period`
+FOR EACH ROW
+BEGIN
+	INSERT INTO `validity_period_sales`(`package_id`,`months`,`monthly_fee`,`sales`)
+		VALUES (NEW.`package_id`,NEW.`months`,NEW.`monthly_fee`,0);
+END//
+
+-- when a new package is inserted, create the relative entry in package_sales
+DROP TRIGGER IF EXISTS `create_optional_sales`//
+CREATE TRIGGER `create_optional_sales` AFTER INSERT ON `optional`
+FOR EACH ROW
+BEGIN
+	INSERT INTO `optional_sales`(`name`,`sales`)
+		VALUES (NEW.`name`,0);
+END//
+
 -- when an order is updated and becomes accepted, update the relative package sales data
 DROP TRIGGER IF EXISTS `update_package_sales1`//
 CREATE TRIGGER `update_package_sales1` AFTER UPDATE ON `order`
@@ -181,16 +208,16 @@ BEGIN
 	DECLARE `cur` CURSOR FOR SELECT `optional` FROM `order_to_optional` WHERE `order_id` = NEW.`id`;	
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET `done` = TRUE;
 	IF NEW.`accepted` = 1 AND OLD.`accepted` = 0 THEN
-		INSERT INTO `activation_schedule`(`user`,`package_id`,`activation_date`,`deactivation_date`)
-			VALUES(NEW.`user`,NEW.`package_id`,NEW.`activation_date`,DATE_ADD(NEW.`activation_date`, INTERVAL NEW.`months` MONTH));
+		INSERT INTO `activation_schedule`(`user`,`order_id`,`package_id`,`activation_date`,`deactivation_date`)
+			VALUES(NEW.`user`,NEW.`id`,NEW.`package_id`,NEW.`activation_date`,DATE_ADD(NEW.`activation_date`, INTERVAL NEW.`months` MONTH));
 		OPEN cur;
         `label1`: LOOP
 			FETCH `cur` INTO `opt`;
             IF `done` THEN
 				LEAVE `label1`;
 			END IF;
-			INSERT INTO `schedule_to_optional`(`user`,`package_id`,`activation_date`,`optional`)
-				VALUES(NEW.`user`,NEW.`package_id`,NEW.`activation_date`,`opt`);
+			INSERT INTO `schedule_to_optional`(`schedule_id`,`optional`)
+				VALUES((SELECT `id` FROM `activation_schedule` WHERE `order_id` = NEW.`id`),`opt`);
         END LOOP `label1`;
 	END IF;
 END//
@@ -201,8 +228,8 @@ CREATE TRIGGER `create_activation_schedule2` AFTER INSERT ON `order`
 FOR EACH ROW
 BEGIN
 	IF NEW.`accepted` = 1 THEN
-		INSERT INTO `activation_schedule`(`user`,`package_id`,`activation_date`,`deactivation_date`)
-			VALUES(NEW.`user`,NEW.`package_id`,NEW.`activation_date`,DATE_ADD(NEW.`activation_date`, INTERVAL NEW.`months` MONTH));
+		INSERT INTO `activation_schedule`(`user`,`order_id`,`package_id`,`activation_date`,`deactivation_date`)
+			VALUES(NEW.`user`,NEW.`id`,NEW.`package_id`,NEW.`activation_date`,DATE_ADD(NEW.`activation_date`, INTERVAL NEW.`months` MONTH));
 	END IF;
 END//
 
@@ -212,8 +239,8 @@ CREATE TRIGGER `create_activation_schedule3` AFTER INSERT ON `order_to_optional`
 FOR EACH ROW
 BEGIN
 	IF (SELECT `accepted` FROM `order` WHERE `id` = NEW.`order_id`) = 1 THEN
-		INSERT INTO `schedule_to_optional`(`user`,`package_id`,`activation_date`,`optional`)
-			VALUES((SELECT `user` FROM `order` WHERE `id` = NEW.`order_id`),(SELECT `package_id` FROM `order` WHERE `id` = NEW.`order_id`),(SELECT `activation_date` FROM `order` WHERE `id` = NEW.`order_id`),NEW.`optional`);
+		INSERT INTO `schedule_to_optional`(`schedule_id`,`optional`)
+			VALUES((SELECT `id` FROM `activation_schedule` WHERE `order_id` = NEW.`order_id`),NEW.`optional`);
 	END IF;
 END//
 

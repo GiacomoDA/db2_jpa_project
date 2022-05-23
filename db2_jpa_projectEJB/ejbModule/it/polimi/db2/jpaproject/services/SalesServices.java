@@ -25,29 +25,6 @@ public class SalesServices {
 	}
 	
 	public List<OptionalSales> findBestSeller() {
-		List<OptionalSales> optionals = em.createNamedQuery("OptionalSales.findAll", OptionalSales.class).getResultList();
-		//Integer max = optionals.stream().map(optional -> optional.getSales()).max(Comparator.comparing(Integer::valueOf)).get();
-		int max = 0;
-
-		for(OptionalSales optional : optionals) {
-			if(optional.getSales() > max) {
-				max = optional.getSales();
-			}
-		}
-		
-		if(max == 0) {
-			return null;
-		}
-		else {
-			List<OptionalSales> bestSeller = new ArrayList<OptionalSales>();
-			for(OptionalSales optional : optionals) {
-				if(optional.getSales() == max) {
-					bestSeller.add(optional);
-				}
-			}
-			return bestSeller;
-		}
-		
+		return em.createNamedQuery("OptionalSales.findBestSeller", OptionalSales.class).getResultList();		
 	}
-	
 }

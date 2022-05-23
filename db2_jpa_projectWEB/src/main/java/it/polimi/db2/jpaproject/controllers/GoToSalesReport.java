@@ -52,7 +52,7 @@ public class GoToSalesReport extends HttpServlet {
 		List<OptionalSales> optionalBestSeller = null;
 		List<InsolventUser> insolventUsers = null;
 		List<SuspendedOrder> suspendedOrder = null;
-
+		
 		try {
 			packageSales = salesServices.findAllPackagePurchase();
 			optionalBestSeller = salesServices.findBestSeller();

@@ -6,25 +6,29 @@ import java.math.BigDecimal;
 import javax.persistence.*;
 
 @Entity
+@IdClass(VPSKey.class)
 @Table(name = "validity_period_sales", schema = "db2_jpa_project")
-@NamedQuery(name = "ValidityPeriodSales.findByPackage", query = "SELECT v FROM ValidityPeriodSales v WHERE v.packageId = ?1")
 public class ValidityPeriodSales implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column (name = "package_id")
-	private Integer packageId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "package_id")
+	private PackageSales packageSales;
 
+	@Id
 	private Integer months;
 
 	@Column (name = "monthly_fee", precision = 10, scale = 2)
 	private BigDecimal monthlyFee;
+	
+	private Integer sales;
 
 	public ValidityPeriodSales() {
 	}
 
-	public Integer getPackageId() {
-		return packageId;
+	public PackageSales getPackageSales() {
+		return packageSales;
 	}
 
 	public Integer getMonths() {
@@ -33,6 +37,10 @@ public class ValidityPeriodSales implements Serializable {
 
 	public BigDecimal getMonthlyFee() {
 		return monthlyFee;
+	}
+
+	public Integer getSales() {
+		return sales;
 	}
 
 }

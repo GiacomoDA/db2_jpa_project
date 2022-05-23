@@ -17,9 +17,9 @@
 	<h1>Create an Optional</h1>
 
 	<form th:action="@{/CreateOptional}" method="POST">
-		<label>Optional name</label> <input id="o" type="text" name="name" required><br> 
-		<label>Monthly fee</label> <input id="m" type="number" name="fee" min="0" step="0.01" required></input><br>
-		<input type="submit" id="addRow" value="Confirm"></input>
+		<label for="optional">Optional name</label> <input type="text" name="name" id="optional" required><br> 
+		<label for="fee">Monthly fee</label> <input type="number" name="fee" id="fee" min="0" step="0.01" required></input><br>
+		<input type="submit" value="Confirm"></input>
 	</form>
 	
 	<div class="errorMessage">

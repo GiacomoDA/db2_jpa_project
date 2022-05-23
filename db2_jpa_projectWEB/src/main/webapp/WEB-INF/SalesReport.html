@@ -8,7 +8,7 @@
 </head>
 <body>
 	<div class="right">
-		<a th:href=@{/Logout}>LogOut</a>
+		<a th:href=@{/Logout}>Logout</a>
 	</div>
 	<div class="right">
 		<a href="OptionalEditor">OptionalEditor</a>
@@ -17,29 +17,33 @@
 		<a href="PackageEditor">PackageEditor</a>
 	</div>
 	
-	<br>
 	<h1>Sales Report</h1>
-	<br>
 
 	<table>
 		<thead>
 			<tr>
-				<th>Package Id</th>
+				<th>Package/Duration</th>
 				<th>Sales</th>
 				<th>Sales W/O Optionals</th>
 				<th>Average Optionals</th>
 			</tr>
 		</thead>
-		<tbody>
-			<tr th:each="p : ${packageSales}">
-				<td><a th:text="${p.getName()}"></a></td>
+		<tbody class="salesReport" th:each="p : ${packageSales}">
+			<tr>
+				<td th:text="${p.getName()}"></td>
 				<td th:text="${p.getSales()}"></td>
 				<td th:text="${p.salesWithoutOptionals()}"></td>
 				<td th:text="${p.averageOptionalsPerPackage()}"></td>
 			</tr>
+			<tr th:each="v : ${p.getValidityPeriodsSales()}">
+				<td th:text="${v.getMonths()}"></td>
+				<td th:text="${v.getSales()}"></td>
+				<td colspan=2></td>
+			</tr>
 		</tbody>
 	</table>
-
+	<br>
+	
 	<h1>Insolvent Users</h1>
 
 	<div th:if="${insolventUserList == null || insolventUserList.isEmpty()}">
@@ -48,12 +52,16 @@
 
 	<div th:if="${insolventUserList != null && !insolventUserList.isEmpty()}">
 		<table>
-			<tr>
-				<th>User</th>
-			</tr>
-			<tr th:each="insolventUser: ${insolventUserList}">
-				<td th:text="${insolventUser.getUser()}"></td>
-			</tr>
+			<thead>
+				<tr>
+					<th>User</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="insolventUser: ${insolventUserList}">
+					<td th:text="${insolventUser.getUser()}"></td>
+				</tr>
+			</tbody>
 		</table>
 	</div>
 	<br>
@@ -66,36 +74,44 @@
 
 	<div th:if="${suspendedOrderList != null && !suspendedOrderList.isEmpty()}">
 		<table>
-			<tr>
-				<th>User</th>
-				<th>Order Id</th>
-				<th>Amount</th>
-			</tr>
-			<tr th:each="suspendedOrder: ${suspendedOrderList}">
-				<td th:text="${suspendedOrder.getUser()}"></td>
-				<td th:text="${suspendedOrder.getId()}"></td>
-				<td th:text="${suspendedOrder.getTotal()}"></td>
-			</tr>
+			<thead>
+				<tr>
+					<th>User</th>
+					<th>Order Id</th>
+					<th>Amount</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="suspendedOrder: ${suspendedOrderList}">
+					<td th:text="${suspendedOrder.getUser()}"></td>
+					<td th:text="${suspendedOrder.getId()}"></td>
+					<td th:text="${suspendedOrder.getTotal()}"></td>
+				</tr>
+			</tbody>
 		</table>
 	</div>
 	<br>
 
 	<h1>Optional Product Best Seller</h1>
 
-	<div th:if="${bestSeller == null}">
-		<i>There are no Bestseller(s) yet</i>
+	<div th:if="${bestSeller == null || bestSeller.isEmpty()}">
+		<i>There are no bestseller(s) yet</i>
 	</div>
 	
-	<div th:if="${bestSeller != null}">
+	<div th:if="${bestSeller != null && !bestSeller.isEmpty()}">
 		<table>
-			<tr>
-				<th>Optional Bestseller</th>
-				<th>Sales</th>
-			</tr>
-			<tr th:each="b: ${bestSeller}">
-				<td th:text="${b.getName()}"></td>
-				<td th:text="${b.getSales()}"></td>
-			</tr>
+			<thead>
+				<tr>
+					<th>Optional Bestseller</th>
+					<th>Sales</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="b: ${bestSeller}">
+					<td th:text="${b.getName()}"></td>
+					<td th:text="${b.getSales()}"></td>
+				</tr>
+			</tbody>
 		</table>
 	</div>
 </body>

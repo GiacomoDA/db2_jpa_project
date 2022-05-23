@@ -8,11 +8,12 @@ import javax.persistence.*;
 @Entity
 @Table(name = "optional", schema = "db2_jpa_project")
 @NamedQueries({
-	@NamedQuery(name = "Optional.findOptionals", query = "SELECT o FROM Optional o WHERE o.name IN ?1"),
-	@NamedQuery(name = "Optional.findOptionalsByName", query = "SELECT o FROM Optional o WHERE o.name = ?1")})
+	@NamedQuery(name = "Optional.findAll", query = "SELECT o FROM OptionalProduct o"),
+	@NamedQuery(name = "Optional.findOptionals", query = "SELECT o FROM OptionalProduct o WHERE o.name IN ?1"),
+	@NamedQuery(name = "Optional.findOptionalsByName", query = "SELECT o FROM OptionalProduct o WHERE o.name = ?1")})
 
 
-public class Optional implements Serializable {
+public class OptionalProduct implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -21,10 +22,10 @@ public class Optional implements Serializable {
 	@Column(name = "monthly_fee", precision = 10, scale = 2)
 	private BigDecimal monthlyFee;
 	
-	public Optional() {
+	public OptionalProduct() {
 	}	
 
-	public Optional(String name, BigDecimal monthlyFee) {
+	public OptionalProduct(String name, BigDecimal monthlyFee) {
 		this.name = name;
 		this.monthlyFee = monthlyFee;
 	}

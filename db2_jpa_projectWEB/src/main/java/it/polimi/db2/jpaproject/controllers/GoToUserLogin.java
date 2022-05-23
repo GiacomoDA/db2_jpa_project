@@ -14,13 +14,13 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-@WebServlet("/GoToEmployeeLogin")
-public class GoToEmployeeLogin extends HttpServlet {
+@WebServlet("/UserLogin")
+public class GoToUserLogin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private TemplateEngine templateEngine;
 
-	public GoToEmployeeLogin() {
+	public GoToUserLogin() {
 		super();
 	}
 
@@ -34,7 +34,7 @@ public class GoToEmployeeLogin extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
-		String path = "/WEB-INF/EmployeeLogin.html";
+		String path = "index.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext context = new WebContext(request, response, servletContext, request.getLocale());
 

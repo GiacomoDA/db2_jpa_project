@@ -17,20 +17,24 @@ public class OptionalService {
 
 	public OptionalService() {
 	}
+	
+	public List<OptionalProduct> findAll() {
+		return em.createNamedQuery("Optional.findAll", OptionalProduct.class).getResultList();
+	}
 
-	public List<Optional> findOptionalsList(List<String> optionals) {
-		return em.createNamedQuery("Optional.findOptionals", Optional.class).setParameter(1, optionals).getResultList();
+	public List<OptionalProduct> findOptionalsList(List<String> optionals) {
+		return em.createNamedQuery("Optional.findOptionals", OptionalProduct.class).setParameter(1, optionals).getResultList();
 	}
 
 	public void addOptional(String name, BigDecimal fee) throws CredentialsException {
 
-		Optional optional = new Optional(name, fee);
+		OptionalProduct optional = new OptionalProduct(name, fee);
 		em.persist(optional);
 		em.flush();
 
 	}
 	
-	public List<Optional> checkOptionals(String name){
-		return em.createNamedQuery("Optional.findOptionalsByName", Optional.class).setParameter(1, name).getResultList();
+	public List<OptionalProduct> checkOptionals(String name){
+		return em.createNamedQuery("Optional.findOptionalsByName", OptionalProduct.class).setParameter(1, name).getResultList();
 	}
 }

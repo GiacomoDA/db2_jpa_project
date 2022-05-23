@@ -7,7 +7,7 @@
 		<class>it.polimi.db2.jpaproject.entities.InsolventUser</class>
 		<class>it.polimi.db2.jpaproject.entities.MobileInternet</class>
 		<class>it.polimi.db2.jpaproject.entities.MobilePhone</class>
-		<class>it.polimi.db2.jpaproject.entities.Optional</class>
+		<class>it.polimi.db2.jpaproject.entities.OptionalProduct</class>
 		<class>it.polimi.db2.jpaproject.entities.OptionalSales</class>
 		<class>it.polimi.db2.jpaproject.entities.Order</class>
 		<class>it.polimi.db2.jpaproject.entities.PackageSales</class>

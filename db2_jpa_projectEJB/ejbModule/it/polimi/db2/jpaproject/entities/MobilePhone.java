@@ -29,13 +29,20 @@ public class MobilePhone implements Serializable {
 	public MobilePhone() {
 	}
 
-	public MobilePhone(ServicePackage servicePackage, Integer minutes, Integer sms, BigDecimal minutesFee,
+	public MobilePhone(Integer minutes, Integer sms, BigDecimal minutesFee,
 			BigDecimal smsFee) {
-		this.servicePackage = servicePackage;
 		this.minutes = minutes;
 		this.sms = sms;
 		this.minutesFee = minutesFee;
 		this.smsFee = smsFee;
+	}
+
+	public ServicePackage getServicePackage() {
+		return servicePackage;
+	}
+
+	public void setServicePackage(ServicePackage servicePackage) {
+		this.servicePackage = servicePackage;
 	}
 
 	public Integer getMinutes() {

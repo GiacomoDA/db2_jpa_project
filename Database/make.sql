@@ -37,7 +37,7 @@ CREATE TABLE `optional` (
 DROP TABLE IF EXISTS `package`;
 CREATE TABLE `package` (
 	`id` int NOT NULL AUTO_INCREMENT,
-    `name` varchar(30) NOT NULL,
+    `name` varchar(30) NOT NULL UNIQUE,
     `fixed_phone` bit NOT NULL,
     PRIMARY KEY (`id`)
 );
@@ -48,7 +48,7 @@ CREATE TABLE `validity_period` (
     `package_id` int NOT NULL,
 	`months` int NOT NULL,
     `monthly_fee` decimal(10,2) NOT NULL,
-    PRIMARY KEY (`months`, `package_id`),
+    PRIMARY KEY (`package_id`, `months`),
     FOREIGN KEY (`package_id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CHECK (`monthly_fee` >= 0.00)
 );
@@ -63,13 +63,13 @@ CREATE TABLE `order` (
     `accepted` boolean NOT NULL,
     `months` int NOT NULL,
     `user` varchar(30),
-    `package_id` int,
+    `package_id` int NOT NULL,
     `failed_payments` int NOT NULL,
     `last_rejection` datetime,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`package_id`) REFERENCES `package` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-    FOREIGN KEY (`months`,`package_id`) REFERENCES `validity_period` (`months`,`package_id`) ON DELETE NO ACTION ON UPDATE CASCADE,
-    FOREIGN KEY (`user`) REFERENCES `user` (`username`) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (`package_id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`package_id`,`months`) REFERENCES `validity_period` (`package_id`,`months`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`user`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE,
     CHECK (`total` >= 0.00),
     CHECK (`failed_payments` >= 0)
 );
@@ -137,11 +137,14 @@ CREATE TABLE `mobile_internet` (
 
 DROP TABLE IF EXISTS `activation_schedule`;
 CREATE TABLE `activation_schedule` (
+    `id` int NOT NULL AUTO_INCREMENT,
     `user` varchar(30) NOT NULL,
+	`order_id` int,
 	`package_id` int NOT NULL,
     `activation_date` date NOT NULL,
     `deactivation_date` date NOT NULL,
-    PRIMARY KEY (`user`,`package_id`,`activation_date`),
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY (`user`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`package_id`) REFERENCES `package` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -149,24 +152,11 @@ CREATE TABLE `activation_schedule` (
 
 DROP TABLE IF EXISTS `schedule_to_optional`;
 CREATE TABLE `schedule_to_optional` (
-    `user` varchar(30) NOT NULL,
-	`package_id` int NOT NULL,
-    `activation_date` date NOT NULL,
+	`schedule_id` int NOT NULL,
 	`optional` varchar(30) NOT NULL,
-    PRIMARY KEY (`user`,`package_id`,`activation_date`,`optional`),
-    FOREIGN KEY (`user`,`package_id`,`activation_date`) REFERENCES `activation_schedule` (`user`,`package_id`,`activation_date`) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (`schedule_id`,`optional`),
+    FOREIGN KEY (`schedule_id`) REFERENCES `activation_schedule` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`optional`) REFERENCES `optional` (`name`) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-
-DROP TABLE IF EXISTS `auditing_table`;
-CREATE TABLE `auditing_table` (
-    `user` varchar(30) NOT NULL,
-	`email` varchar(30) NOT NULL,
-    `amount` int NOT NULL,
-    `last_rejection` datetime NOT NULL,
-    PRIMARY KEY (`user`),
-    FOREIGN KEY (`user`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
@@ -181,8 +171,8 @@ CREATE TABLE `package_sales` (
     `sales_with_optionals` int NOT NULL,
     `optionals_sales` int NOT NULL,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`id`) REFERENCES `package`(`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
-    CHECK (`sales` > 0),
+    FOREIGN KEY (`id`) REFERENCES `package`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CHECK (`sales` >= 0),
     CHECK (`sales_with_optionals` >= 0),
     CHECK (`optionals_sales` >= 0)
 );
@@ -196,7 +186,7 @@ CREATE TABLE `validity_period_sales` (
     `sales` int NOT NULL,
     PRIMARY KEY (`package_id`, `months`),
     FOREIGN KEY (`package_id`, `months`) REFERENCES `validity_period`(`package_id`, `months`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CHECK (`sales` > 0),
+    CHECK (`sales` >= 0),
     CHECK (`monthly_fee` >= 0.00)
 );
 
@@ -207,7 +197,7 @@ CREATE TABLE `optional_sales` (
     `sales` int NOT NULL,
     PRIMARY KEY (`name`),
     FOREIGN KEY (`name`) REFERENCES `optional`(`name`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CHECK (`sales` > 0)
+    CHECK (`sales` >= 0)
 );
 
 
@@ -217,6 +207,17 @@ CREATE TABLE `insolvent_user` (
     `email` varchar(30) NOT NULL,
     PRIMARY KEY (`user`),
     FOREIGN KEY (`user`) REFERENCES `user`(`username`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+
+DROP TABLE IF EXISTS `auditing_table`;
+CREATE TABLE `auditing_table` (
+    `user` varchar(30) NOT NULL,
+	`email` varchar(30) NOT NULL,
+    `amount` int NOT NULL,
+    `last_rejection` datetime NOT NULL,
+    PRIMARY KEY (`user`),
+    FOREIGN KEY (`user`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 

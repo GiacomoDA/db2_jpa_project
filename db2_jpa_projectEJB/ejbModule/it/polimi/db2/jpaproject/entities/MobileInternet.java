@@ -24,10 +24,16 @@ public class MobileInternet implements Serializable {
 	public MobileInternet() {
 	}
 	
-	public MobileInternet(ServicePackage servicePackage, Integer gigabytes, BigDecimal gigabytesFee) {
-		this.servicePackage = servicePackage;
-		this.gigabytes = gigabytes;
+	public MobileInternet(Integer gigabytes, BigDecimal gigabytesFee) {
 		this.gigabytesFee = gigabytesFee;
+	}
+
+	public ServicePackage getServicePackage() {
+		return servicePackage;
+	}
+
+	public void setServicePackage(ServicePackage servicePackage) {
+		this.servicePackage = servicePackage;
 	}
 
 	public Integer getGigabytes() {
