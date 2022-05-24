@@ -27,8 +27,18 @@ public class ValidityPeriod implements Serializable {
 	public ValidityPeriod() {
 	}
 
+	public ValidityPeriod(Integer months, BigDecimal monthlyFee) {
+		super();
+		this.months = months;
+		this.monthlyFee = monthlyFee;
+	}
+
 	public ServicePackage getServicePackage() {
 		return servicePackage;
+	}
+
+	public void setServicePackage(ServicePackage servicePackage) {
+		this.servicePackage = servicePackage;
 	}
 
 	public int getMonths() {

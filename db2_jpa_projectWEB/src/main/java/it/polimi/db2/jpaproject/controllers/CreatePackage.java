@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.EJB;
+import javax.persistence.NoResultException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -37,6 +38,9 @@ public class CreatePackage extends HttpServlet {
 
 	@EJB(name = "it.polimi.db2.jpaproject.services/OptionalService")
 	private OptionalService optionalService;
+	
+	@EJB(name = "it.polimi.db2.jpaproject.services/ValidityPeriodService")
+	private ValidityPeriodService validityPeriodService;
 
 	public CreatePackage() {
 		super();
@@ -55,8 +59,10 @@ public class CreatePackage extends HttpServlet {
 			throws ServletException, IOException {
 		String name;
 		List<String> services;
-		List<String> validityPeriods;
+		List<ValidityPeriod> validityPeriods;
 		List<String> optionals;
+		List<String> validityMonths;
+		List<String> validityFee;
 		MobilePhone mobilePhone = null;
 		Integer minutes = null;
 		Integer sms = null;
@@ -94,14 +100,29 @@ public class CreatePackage extends HttpServlet {
 				mbGFee = new BigDecimal(StringEscapeUtils.escapeJava(request.getParameter("MIGBFee")));
 				mobileInternet = serviceService.newMobileInternet(mbGigabytes, mbGFee);
 			}
+			
+			validityMonths = Arrays.asList(Optional.ofNullable(request.getParameterValues("months")).orElse(new String[0]));
+			validityFee = Arrays.asList(Optional.ofNullable(request.getParameterValues("fee")).orElse(new String[0]));
+			
+			if(validityMonths.isEmpty() || validityFee.isEmpty()) {
+				throw new IllegalArgumentException();
+			}
+			
+			validityPeriods = validityPeriodService.newValidityPeriods(validityMonths, validityFee);
+			
 			if (name == null || name.isEmpty())
 				throw new Exception("Missing or empty value");
 		} catch (NumberFormatException numberException) {
-			request.getSession().setAttribute("errorMessage", "Invalid value");
-			String path = getServletContext().getContextPath() + "/GoToPackageEditor";
+			request.getSession().setAttribute("errorMessage", "Missing or invalid value");
+			String path = getServletContext().getContextPath() + "/PackageEditor";
 			response.sendRedirect(path);
 			return;
-		} catch (Exception e) {
+		} catch (IllegalArgumentException noVPArguments) {
+			request.getSession().setAttribute("errorMessage", "Need at least one validity period");
+			String path = getServletContext().getContextPath() + "/PackageEditor";
+			response.sendRedirect(path);
+			return;
+		}catch (Exception e) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or invalid values");
 			return;
 		}
@@ -111,38 +132,17 @@ public class CreatePackage extends HttpServlet {
 				request.getSession().setAttribute("errorMessage", "This package name is taken");
 				String path = getServletContext().getContextPath() + "/PackageEditor";
 				response.sendRedirect(path);
+				return;
 			}
 		} catch (Exception e) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or invalid values");
 			return;	
 		}
-
-		packageService.addPackage(name, services.contains("fixedPhone"), mobilePhone, fixedInternet, mobileInternet, null, optionals);
 		
-		String path;
+		packageService.addPackage(name, services.contains("fixedPhone"), mobilePhone, fixedInternet, mobileInternet, validityPeriods, optionals);
 
-		/*try {
-			if (packageService.findPackageByName(name) != null) {
-				throw new Exception("Already existing Package!");
-			}
-			BigDecimal minutesFee = new BigDecimal(mFee);
-			BigDecimal smsFee = new BigDecimal(sFee);
-			BigDecimal fxGigabytesFee = new BigDecimal(fxGFee);
-			BigDecimal mbGigabytesFee = new BigDecimal(mbGFee);
-			packageService.addOptional(optionalName, fee);
-
-			path = "/WEB-INF/OptionalEditor.html";
-			ServletContext servletContext = getServletContext();
-			final WebContext context = new WebContext(request, response, servletContext, request.getLocale());
-			templateEngine.process(path, context, response.getWriter());
-
-		} catch (Exception e) {
-			ServletContext servletContext = getServletContext();
-			final WebContext context = new WebContext(request, response, servletContext, request.getLocale());
-			context.setVariable("errorOptionalCreation", "Already existing Optional!");
-			path = "/WEB-INF/OptionalEditor.html";
-			templateEngine.process(path, context, response.getWriter());
-		}*/
+		String path = getServletContext().getContextPath() + "/PackageEditor";
+		response.sendRedirect(path);
 	}
 
 	public void destroy() {

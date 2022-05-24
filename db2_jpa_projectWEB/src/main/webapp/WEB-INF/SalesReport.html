@@ -58,7 +58,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="insolventUser: ${insolventUserList}">
+				<tr th:each="insolventUser : ${insolventUserList}">
 					<td th:text="${insolventUser.getUser()}"></td>
 				</tr>
 			</tbody>
@@ -82,7 +82,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="suspendedOrder: ${suspendedOrderList}">
+				<tr th:each="suspendedOrder : ${suspendedOrderList}">
 					<td th:text="${suspendedOrder.getUser()}"></td>
 					<td th:text="${suspendedOrder.getId()}"></td>
 					<td th:text="${suspendedOrder.getTotal()}"></td>
@@ -107,7 +107,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="b: ${bestSeller}">
+				<tr th:each="b : ${bestSeller}">
 					<td th:text="${b.getName()}"></td>
 					<td th:text="${b.getSales()}"></td>
 				</tr>

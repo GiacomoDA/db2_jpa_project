@@ -25,6 +25,7 @@ public class MobileInternet implements Serializable {
 	}
 	
 	public MobileInternet(Integer gigabytes, BigDecimal gigabytesFee) {
+		this.gigabytes = gigabytes;
 		this.gigabytesFee = gigabytesFee;
 	}
 

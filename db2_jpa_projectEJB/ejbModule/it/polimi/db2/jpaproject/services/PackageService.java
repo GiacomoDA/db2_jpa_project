@@ -2,6 +2,7 @@ package it.polimi.db2.jpaproject.services;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import it.polimi.db2.jpaproject.entities.*;
 import java.util.List;
@@ -19,20 +20,29 @@ public class PackageService {
 	}
 
 	public ServicePackage findPackageById(int packageId) {
-		return em.createNamedQuery("ServicePackage.findById", ServicePackage.class).setParameter(1, packageId)
-				.getSingleResult();
+		return em.createNamedQuery("ServicePackage.findById", ServicePackage.class).setParameter(1, packageId).getSingleResult();
 	}
 
 	public ServicePackage findPackageByName(String name) {
-		return em.createNamedQuery("ServicePackage.findByName", ServicePackage.class).setParameter(1, name)
-				.getSingleResult();
+		try { 
+			return em.createNamedQuery("ServicePackage.findByName", ServicePackage.class).setParameter(1, name).getSingleResult();
+		} catch(NoResultException e){
+			return null;
+		}
 	}
 
 	public ServicePackage addPackage(String name, Boolean fixedPhone, MobilePhone mobilePhone,
 			FixedInternet fixedInternet, MobileInternet mobileInternet, List<ValidityPeriod> validityPeriods,
 			List<String> opt) {
-		List<OptionalProduct> optionals = em.createNamedQuery("Optional.findOptionals", OptionalProduct.class).setParameter(1, opt).getResultList();
+		
+		List<OptionalProduct> optionals = null;
+		
+		if (!opt.isEmpty()) {
+			optionals = em.createNamedQuery("Optional.findOptionals", OptionalProduct.class).setParameter(1, opt).getResultList();
+		}
+		
 		ServicePackage servicePackage = new ServicePackage(name, fixedPhone, mobilePhone, fixedInternet, mobileInternet, validityPeriods, optionals);
+		
 		if (mobilePhone != null) {
 			mobilePhone.setServicePackage(servicePackage);
 		}
@@ -41,6 +51,9 @@ public class PackageService {
 		}
 		if (mobileInternet != null) {
 			mobileInternet.setServicePackage(servicePackage);
+		}
+		for (ValidityPeriod v : validityPeriods) {
+			v.setServicePackage(servicePackage);
 		}
 		em.persist(servicePackage);
 		return null;
