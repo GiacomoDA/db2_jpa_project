@@ -13,101 +13,202 @@
 	<div class="right">
 		<a th:href="@{/SalesReport}">Home</a>
 	</div>
-	
+
 	<h1>Create a Package</h1>
-	
+
 	<form th:action="@{/CreatePackage}" method="POST">
         <label>Package name</label>
 		<input type="text" name="name" required><br>
-		
-		<div class=sideBySide>
+
         <h3>Services:</h3>
 		<div class=sideBySide>
+					<h3>Fixed Phone</h3><br>
 	        <input type="checkbox" name="service" value="fixedPhone" id="fixedPhone">
 	        <label for="fixedPhone">Fixed Phone</label><br>
-
-	        <input type="checkbox" name="service" value="mobilePhone" id="mobilePhone">
-	        <label for="mobilePhone">Mobile Phone</label><br>
-	        <label>Minutes</label>
-	        <input type="number" name="MPMinutes" min="0"><br>
-	        <label>Extra minutes fee</label>
-	        <input type="number" name="MPMinutesFee" min="0" step="0.01"><br>
-	        <label>SMS</label>
-	        <input type="number" name="MPSMS" min="0"><br>
-	        <label>Extra SMS fee</label>
-	        <input type="number" name="MPSMSFee" min="0" step="0.01"><br>
-	        
-	        <div th:if="${optionals.isEmpty()}">
-        		<h3>No Optionals available</h3>
-        	</div>
-        
-        	<div th:if="${!optionals.isEmpty()}">
-        		<h3>Optionals</h3>
-	        		<div th:each="o : ${optionals}">
-	        			<input type="checkbox" name="optional" th:value="${o.getName()}" th:id="${o.getName()}">
-	        			<label th:text="${o.getName() + ': ' + o.getMonthlyFee() + '/month'}" th:for="${o.getName()}"></label>
-	        		</div>
-        	</div>
-        </div>
+		</div>
 
 		<div class=sideBySide>
-	        <input type="checkbox" name="service" value="fixedInternet" id="fixedInternet">
-	        <label for="fixedInternet">Fixed Internet</label><br>
-	        <label>Gigabytes</label>
-	        <input type="number" name="FIGB" min="0"><br>
-	        <label>Extra gigabytes fee</label>
-	        <input type="number" name="FIGBFee" min="0" step="0.01"><br>
+	        <h3>Mobile Phone</h3><br>
+	        <label>Minutes</label>
+	        <input type="number" id="minutes" name="MPMinutes" min="0"><br>
+	        <label>Extra minutes fee</label>
+	        <input type="number" id="extraMinFee" name="MPMinutesFee" min="0" step="0.01"><br>
+	        <label>SMS</label>
+	        <input type="number" id="sms" name="MPSMS" min="0"><br>
+	        <label>Extra SMS fee</label>
+	        <input type="number" id="extraSmsFee" name="MPSMSFee" min="0" step="0.01"><br>
+					<button type=button onclick="addMobilePhone()">Add Mobile Phone</button>
+	   </div>
 
-	        <input type="checkbox" name="service" value="mobileInternet" id="mobileInternet">
-	        <label for="mobileInternet">Mobile Internet</label><br>
+		<div class=sideBySide>
+	        <h3>Fixed Internet</h3><br>
 	        <label>Gigabytes</label>
-	        <input type="number" name="MIGB" min="0"><br>
+	        <input type="number" id="fiGb" name="FIGb" min="0"><br>
 	        <label>Extra gigabytes fee</label>
-	        <input type="number" name="MIGBFee" min="0" step="0.01"><br>
-	        
-	        <h3>Validy period</h3>
-	        <label>Months</label>
-        	<input type="number" id="months" min="0"><br>
-        	<label>Fee</label>
-        	<input type="number" id="fee" min="0" step="0.01"><br>
-        	<button type=button onclick="addValidityPeriod()">Add validity period</button>
-        </div>
-        </div>
-        
-        <div class = sideBySide>
-        <h3>Added Validity Periods</h3>
-        	<table>
-        		<thead>
-        			<tr>
-        				<th>Months</th>
-        				<th>Fee</th>
-        			</tr>
-        		</thead>
-        		<tbody id="VPTableBody">
-        		</tbody>
-        	</table>
-        </div>
-        
+	        <input type="number" id="fiGbFee" name="FIGBFee" min="0" step="0.01"><br>
+					<button type=button onclick="addFixedInternet()">Add Fixed Internet</button>
+		</div>
+
+		<div class=sideBySide>
+	        <h3>Mobile Internet</h3><br>
+	        <label>Gigabytes</label>
+	        <input type="number" id="miGb" name="MIGB" min="0"><br>
+	        <label>Extra gigabytes fee</label>
+	        <input type="number" id="miGbFee" name="MIGBFee" min="0" step="0.01"><br>
+					<button type=button onclick="addMobileInternet()">Add Mobile Internet</button>
+	   </div>
+
+		 <div>
+			 <div class=sideBySide>
+		 			<div th:if="${optionals.isEmpty()}">
+			 				<h3>No Optionals available</h3>
+		 			</div>
+
+		 			<div th:if="${!optionals.isEmpty()}">
+			 				<h3>Optionals</h3>
+				 			<div th:each="o : ${optionals}">
+					 			<input type="checkbox" name="optional" th:value="${o.getName()}" th:id="${o.getName()}">
+					 			<label th:text="${o.getName() + ': ' + o.getMonthlyFee() + '/month'}" th:for="${o.getName()}"></label>
+				 			</div>
+			 		</div>
+			</div>
+
+			 <div class=sideBySide>
+	        		<h3>Validy period</h3>
+	        		<label>Months</label>
+        			<input type="number" id="months" min="0"><br>
+        			<label>Fee</label>
+        			<input type="number" id="fee" min="0" step="0.01"><br>
+        			<button type=button onclick="addValidityPeriod()">Add validity period</button>
+      		 </div>
+    </div>
+
+		<div>
+		<h3>Added Mobile Phone(s)</h3>
+			<table>
+				<thead>
+					<tr>
+						<th>Minutes</th>
+						<th>Extra Min. Fee</th>
+						<th>SMS</th>
+						<th>Extra SMS Fee</th>
+					</tr>
+				</thead>
+				<tbody id="MPTableBody">
+				</tbody>
+			</table>
+		</div>
+
+		<div>
+		<h3>Added Fixed Internet</h3>
+			<table>
+				<thead>
+					<tr>
+						<th>Gigabytes</th>
+						<th>Extra GB Fee</th>
+					</tr>
+				</thead>
+				<tbody id="FITableBody">
+				</tbody>
+			</table>
+		</div>
+
+		<div>
+		<h3>Added Mobile Internet</h3>
+			<table>
+				<thead>
+					<tr>
+						<th>Gigabytes</th>
+						<th>Extra GB Fee</th>
+					</tr>
+				</thead>
+				<tbody id="MITableBody">
+				</tbody>
+			</table>
+		</div>
+
+		<div>
+		<h3>Added Validity Period(s)</h3>
+			<table>
+				<thead>
+					<tr>
+						<th>Months</th>
+						<th>Fee</th>
+					</tr>
+				</thead>
+				<tbody id="VPTableBody">
+				</tbody>
+			</table>
+		</div>
+
         <script type="text/javascript">
-			function addValidityPeriod() {
-			  let tbody = document.getElementById("VPTableBody");
-			  let months = document.getElementById("months").value;
-			  let fee = document.getElementById("fee").value;
-			
-			  tbody.innerHTML += 	`<tr>
-			  						<td><input name="months" value=${months} ></td>
-			  						<td><input name="fee" value=${fee} ></td>
+					function addMobilePhone() {
+			  			let tbody = document.getElementById("MPTableBody");
+			  			let minutes = document.getElementById("minutes").value;
+			  			let extraMinFee = document.getElementById("extraMinFee").value;
+			  			let sms = document.getElementById("sms").value;
+			  			let extraSmsFee = document.getElementById("extraSmsFee").value;
+
+			  			tbody.innerHTML += 	`<tr>
+			  						<td><input name="minutes" readonly value=${minutes} ></td>
+			  						<td><input name="extraMinFee" readonly value=${extraMinFee} ></td>
+			  						<td><input name="sms" readonly value=${sms} ></td>
+			  						<td><input name="extraSmsFee" readonly value=${extraSmsFee} ></td>
 			  						</tr>`;
-			}
+			  						
+			  			document.getElementById("minutes").value = "";
+			  			document.getElementById("extraMinFee").value = "";
+			  			document.getElementById("sms").value = "";
+			  			document.getElementById("extraSmsFee").value = "";
+					}
+					
+					function addFixedInternet() {
+				  		let tbody = document.getElementById("FITableBody");
+				  		let fiGb = document.getElementById("fiGb").value;
+				  		let fiGbFee = document.getElementById("fiGbFee").value;
+
+				  		tbody.innerHTML += 	`<tr>
+				  						<td><input name="fiGb" readonly value=${fiGb} ></td>
+				  						<td><input name="fiGbFee" readonly value=${fiGbFee} ></td>
+				  						</tr>`;
+				  						
+				  		document.getElementById("fiGb").value = "";
+			  			document.getElementById("fiGbFee").value = "";				
+						}
+					
+					function addMobileInternet() {
+				  		let tbody = document.getElementById("MITableBody");
+				  		let miGb = document.getElementById("miGb").value;
+				  		let miGbFee = document.getElementById("miGbFee").value;
+
+				  		tbody.innerHTML += 	`<tr>
+				  						<td><input name="miGb" readonly value=${miGb} ></td>
+				  						<td><input name="miGbFee" readonly value=${miGbFee} ></td>
+				  						</tr>`;
+				  						
+				  		document.getElementById("miGb").value = "";
+			  			document.getElementById("miGbFee").value = "";				
+						}
+					
+					function addValidityPeriod() {
+				  		let tbody = document.getElementById("VPTableBody");
+				  		let months = document.getElementById("months").value;
+				  		let fee = document.getElementById("fee").value;
+
+				  		tbody.innerHTML += 	`<tr>
+				  						<td><input name="months" readonly value=${months} ></td>
+				  						<td><input name="fee" readonly value=${fee} ></td>
+				  						</tr>`;
+						}
 		</script>
 
-	<div>
+	<div class="right">
         <input type="submit" value="Confirm"><br>
 			<div class="errorMessage">
 				<p class="errorMessage" th:text="${errorMessage}"></p>
 			</div>
 	</div>
 	</form>
-	
+
 </body>
 </html>

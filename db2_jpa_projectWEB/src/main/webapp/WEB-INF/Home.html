@@ -35,16 +35,16 @@
 				<tr th:each="p : ${packages}">
 					<td><a th:text="${p.name}" th:href=@{/Package(packageId=${p.getId()})}></a></td>
 					<td th:text="${p.hasFixedPhone()} ? 'Y' : 'N'"></td>
-					<td th:text="${p.getMobilePhone()} ? 'Y' : 'N'"></td>
-					<td th:text="${p.getFixedInternet()} ? 'Y' : 'N'"></td>
-					<td th:text="${p.getMobileInternet()} ? 'Y' : 'N'"></td>
+					<td th:text="${!p.getMobilePhone().isEmpty()} ? 'Y' : 'N'"></td>
+					<td th:text="${!p.getFixedInternet().isEmpty()} ? 'Y' : 'N'"></td>
+					<td th:text="${!p.getMobileInternet().isEmpty()} ? 'Y' : 'N'"></td>
 					<td th:text="${p.getOptionals().size()}"></td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
 	
-	<div th:if="${orders.size()}">	
+	<div th:if="${orders != null && orders.size()}">	
 		<h1>Rejected orders</h1>	
 		<table>
 			<thead>

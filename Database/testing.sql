@@ -75,6 +75,12 @@ FROM `optional`;
 SELECT *
 FROM `package`;
 SELECT *
+FROM `mobile_phone`;
+SELECT *
+FROM `fixed_internet`;
+SELECT *
+FROM `mobile_internet`;
+SELECT *
 FROM `package_to_optional`;
 SELECT *
 FROM `order_to_optional`;

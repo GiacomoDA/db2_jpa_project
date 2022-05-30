@@ -39,6 +39,15 @@ public class CreatePackage extends HttpServlet {
 	@EJB(name = "it.polimi.db2.jpaproject.services/OptionalService")
 	private OptionalService optionalService;
 	
+	@EJB(name = "it.polimi.db2.jpaproject.services/MobilePhoneService")
+	private MobilePhoneService mobilePhoneService;
+	
+	@EJB(name = "it.polimi.db2.jpaproject.services/FixedInternetService")
+	private FixedInternetService fixedInternetService;
+	
+	@EJB(name = "it.polimi.db2.jpaproject.services/MobileInternetService")
+	private MobileInternetService mobileInternetService;
+	
 	@EJB(name = "it.polimi.db2.jpaproject.services/ValidityPeriodService")
 	private ValidityPeriodService validityPeriodService;
 
@@ -59,55 +68,58 @@ public class CreatePackage extends HttpServlet {
 			throws ServletException, IOException {
 		String name;
 		List<String> services;
-		List<ValidityPeriod> validityPeriods;
 		List<String> optionals;
+		List<ValidityPeriod> validityPeriods;
 		List<String> validityMonths;
 		List<String> validityFee;
-		MobilePhone mobilePhone = null;
-		Integer minutes = null;
-		Integer sms = null;
-		BigDecimal mFee = null;
-		BigDecimal sFee = null;
-		FixedInternet fixedInternet = null;
-		Integer fxGigabytes = null;
-		BigDecimal fxGFee = null;
-		MobileInternet mobileInternet = null;
-		Integer mbGigabytes = null;
-		BigDecimal mbGFee = null;
+		List<MobilePhone> mobilePhone = null;
+		List<String> minutes;
+		List<String> sms;
+		List<String> mFee;
+		List<String> sFee;
+		List<FixedInternet> fixedInternet = null;
+		List<String> fxGigabytes;
+		List<String> fxGFee;
+		List<MobileInternet> mobileInternet = null;
+		List<String> mbGigabytes;
+		List<String> mbGFee;
 
 
 		try {
 			name = StringEscapeUtils.escapeJava(request.getParameter("name"));
+			//useless??
 			services = Arrays.asList(Optional.ofNullable(request.getParameterValues("service")).orElse(new String[0]));
 			optionals = Arrays.asList(Optional.ofNullable(request.getParameterValues("optional")).orElse(new String[0]));
+			
 			//mobilePhone
-			if (services.contains("mobilePhone")) {
-				minutes = Integer.valueOf(StringEscapeUtils.escapeJava(request.getParameter("MPMinutes")));
-				sms = Integer.valueOf(StringEscapeUtils.escapeJava(request.getParameter("MPSMS")));
-				mFee = new BigDecimal(StringEscapeUtils.escapeJava(request.getParameter("MPMinutesFee")));
-				sFee = new BigDecimal(StringEscapeUtils.escapeJava(request.getParameter("MPSMSFee")));
-				mobilePhone = serviceService.newMobilePhone(minutes, sms, sFee, sFee);
-			}
-			//fixedInternet
-			if (services.contains("fixedInternet")) {
-				fxGigabytes = Integer.valueOf(StringEscapeUtils.escapeJava(request.getParameter("FIGB")));
-				fxGFee = new BigDecimal(StringEscapeUtils.escapeJava(request.getParameter("FIGBFee")));
-				fixedInternet = serviceService.newFixedInternet(fxGigabytes, fxGFee);
-			}
-			//mobileInternet
-			if (services.contains("mobileInternet")) {
-				mbGigabytes = Integer.valueOf(StringEscapeUtils.escapeJava(request.getParameter("MIGB")));
-				mbGFee = new BigDecimal(StringEscapeUtils.escapeJava(request.getParameter("MIGBFee")));
-				mobileInternet = serviceService.newMobileInternet(mbGigabytes, mbGFee);
+			minutes = Arrays.asList(Optional.ofNullable(request.getParameterValues("minutes")).orElse(new String[0]));
+			sms = Arrays.asList(Optional.ofNullable(request.getParameterValues("sms")).orElse(new String[0]));
+			mFee = Arrays.asList(Optional.ofNullable(request.getParameterValues("extraMinFee")).orElse(new String[0]));
+			sFee = Arrays.asList(Optional.ofNullable(request.getParameterValues("extraSmsFee")).orElse(new String[0]));
+			if (!minutes.isEmpty() && !sms.isEmpty() && !mFee.isEmpty() && !sFee.isEmpty()) {
+				mobilePhone = mobilePhoneService.newMobilePhone(minutes, sms, mFee, sFee);
 			}
 			
+			//fixedInternet
+			fxGigabytes = Arrays.asList(Optional.ofNullable(request.getParameterValues("fiGb")).orElse(new String[0]));
+			fxGFee = Arrays.asList(Optional.ofNullable(request.getParameterValues("fiGbFee")).orElse(new String[0]));
+			if (!fxGigabytes.isEmpty() && !fxGFee.isEmpty()) {
+				fixedInternet = fixedInternetService.newFixedInternet(fxGigabytes, fxGFee);
+			}
+			
+			//mobileInternet 
+			mbGigabytes = Arrays.asList(Optional.ofNullable(request.getParameterValues("miGb")).orElse(new String[0]));
+			mbGFee = Arrays.asList(Optional.ofNullable(request.getParameterValues("miGbFee")).orElse(new String[0]));
+			if (!mbGigabytes.isEmpty() && !mbGFee.isEmpty()) {
+				mobileInternet = mobileInternetService.newMobileInternet(mbGigabytes, mbGFee);
+			}
+			
+			//validyPeriod(s)
 			validityMonths = Arrays.asList(Optional.ofNullable(request.getParameterValues("months")).orElse(new String[0]));
 			validityFee = Arrays.asList(Optional.ofNullable(request.getParameterValues("fee")).orElse(new String[0]));
-			
 			if(validityMonths.isEmpty() || validityFee.isEmpty()) {
 				throw new IllegalArgumentException();
 			}
-			
 			validityPeriods = validityPeriodService.newValidityPeriods(validityMonths, validityFee);
 			
 			if (name == null || name.isEmpty())

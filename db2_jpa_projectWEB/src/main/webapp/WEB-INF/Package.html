@@ -30,24 +30,30 @@
 			</div>
 		</li>
 
-		<li th:if="${package.getMobilePhone()}">
+		<li th:if="${package.getMobilePhone() && !package.getMobilePhone().isEmpty()}">
 			<div>
 				<h3>Mobile Phone</h3>
-				<p style="white-space: pre;" th:text="${package.getMobilePhone().toString()}"></p>
+				<div th:each="mp : ${package.getMobilePhone()}">
+					<p style="white-space: pre;" th:text="${mp.toString()}"></p>
+				</div>
 			</div>
 		</li>
 
-		<li th:if="${package.getFixedInternet()}">
+		<li th:if="${package.getFixedInternet() && !package.getFixedInternet().isEmpty()}">
 			<div>
 				<h3>Fixed Internet</h3>
-				<p style="white-space: pre;" th:text="${package.getFixedInternet().toString()}"></p>
+				<div th:each="fi : ${package.getFixedInternet()}">
+					<p style="white-space: pre;" th:text="${fi.toString()}"></p>
+				</div>
 			</div>
 		</li>
 
-		<li th:if="${package.getMobileInternet()}">
+		<li th:if="${package.getMobileInternet() && !package.getMobileInternet().isEmpty()}">
 			<div>
 				<h3>Mobile Internet</h3>
-				<p style="white-space: pre;" th:text="${package.getMobileInternet().toString()}"></p>
+				<div th:each="mi : ${package.getMobileInternet()}">
+					<p style="white-space: pre;" th:text="${mi.toString()}"></p>
+				</div>
 			</div>
 		</li>
 	</ul>
@@ -63,7 +69,9 @@
 				<h3>Optionals</h3>
 				<div th:each="o : ${package.getOptionals()}">
 					<input type="checkbox" name="optional" th:value="${o.getName()}" th:id="${o.getName()}">
-					<label th:text="${o.getName() + ': ' + o.getMonthlyFee() + '/month'}" th:for="${o.getName()}"></label>
+					<label th:text="${o.getName() + ': ' + o.getMonthlyFee()}"></label>
+					<span>&euro;</span>
+					<label th:text="${'/month'}" th:for="${o.getName()}"></label>
 				</div>
 			</div>
 			<div class="sideBySide">

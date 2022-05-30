@@ -24,14 +24,14 @@ public class ServicePackage implements Serializable {
 	@Column(name = "fixed_phone")
 	private Boolean fixedPhone;
 
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "servicePackage", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
-	private MobilePhone mobilePhone;
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "servicePackage", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
+	private List<MobilePhone> mobilePhone;
 
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "servicePackage", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
-	private FixedInternet fixedInternet;
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "servicePackage", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
+	private List<FixedInternet> fixedInternet;
 	
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "servicePackage", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
-	private MobileInternet mobileInternet;
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "servicePackage", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
+	private List<MobileInternet> mobileInternet;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "servicePackage", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH })
 	@OrderBy("months ASC")
@@ -44,8 +44,8 @@ public class ServicePackage implements Serializable {
 	public ServicePackage() {
 	}
 
-	public ServicePackage(String name, Boolean fixedPhone, MobilePhone mobilePhone, FixedInternet fixedInternet,
-			MobileInternet mobiletInternet, List<ValidityPeriod> validityPeriods, List<OptionalProduct> optionals) {
+	public ServicePackage(String name, Boolean fixedPhone, List<MobilePhone> mobilePhone, List<FixedInternet> fixedInternet,
+			List<MobileInternet> mobiletInternet, List<ValidityPeriod> validityPeriods, List<OptionalProduct> optionals) {
 		this.name = name;
 		this.fixedPhone = fixedPhone;
 		this.mobilePhone = mobilePhone;
@@ -63,15 +63,15 @@ public class ServicePackage implements Serializable {
 		return name;
 	}
 
-	public MobilePhone getMobilePhone() {
+	public List<MobilePhone> getMobilePhone() {
 		return mobilePhone;
 	}
 
-	public FixedInternet getFixedInternet() {
+	public List<FixedInternet> getFixedInternet() {
 		return fixedInternet;
 	}
 
-	public MobileInternet getMobileInternet() {
+	public List<MobileInternet> getMobileInternet() {
 		return mobileInternet;
 	}
 
