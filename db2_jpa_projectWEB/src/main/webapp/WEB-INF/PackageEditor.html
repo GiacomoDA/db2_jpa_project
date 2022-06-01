@@ -149,17 +149,19 @@
 			  			let sms = document.getElementById("sms").value;
 			  			let extraSmsFee = document.getElementById("extraSmsFee").value;
 
-			  			tbody.innerHTML += 	`<tr>
+			  			if(minutes != "" && extraMinFee != "" && sms != "" && extraSmsFee != ""){
+			  				tbody.innerHTML += 	`<tr>
 			  						<td><input class="tableInput" name="minutes" readonly value=${minutes} ></td>
 			  						<td><input class="tableInput" name="extraMinFee" readonly value=${extraMinFee} ></td>
 			  						<td><input class="tableInput" name="sms" readonly value=${sms} ></td>
 			  						<td><input class="tableInput" name="extraSmsFee" readonly value=${extraSmsFee} ></td>
 			  						</tr>`;
 			  						
-			  			document.getElementById("minutes").value = "";
-			  			document.getElementById("extraMinFee").value = "";
-			  			document.getElementById("sms").value = "";
-			  			document.getElementById("extraSmsFee").value = "";
+			  				document.getElementById("minutes").value = "";
+			  				document.getElementById("extraMinFee").value = "";
+			  				document.getElementById("sms").value = "";
+			  				document.getElementById("extraSmsFee").value = "";
+			  			}
 					}
 					
 					function addFixedInternet() {
@@ -167,39 +169,48 @@
 				  		let fiGb = document.getElementById("fiGb").value;
 				  		let fiGbFee = document.getElementById("fiGbFee").value;
 
-				  		tbody.innerHTML += 	`<tr>
+				  		if(fiGb != "" && fiGbFee != ""){
+				  			tbody.innerHTML += 	`<tr>
 				  						<td><input class="tableInput" name="fiGb" readonly value=${fiGb} ></td>
 				  						<td><input class="tableInput" name="fiGbFee" readonly value=${fiGbFee} ></td>
 				  						</tr>`;
 				  						
-				  		document.getElementById("fiGb").value = "";
-			  			document.getElementById("fiGbFee").value = "";				
+				  			document.getElementById("fiGb").value = "";
+			  				document.getElementById("fiGbFee").value = "";				
 						}
+					}
 					
 					function addMobileInternet() {
 				  		let tbody = document.getElementById("MITableBody");
 				  		let miGb = document.getElementById("miGb").value;
 				  		let miGbFee = document.getElementById("miGbFee").value;
 
-				  		tbody.innerHTML += 	`<tr>
+				  		if(miGb != "" && miGbFee != ""){
+				  			tbody.innerHTML += 	`<tr>
 				  						<td><input class="tableInput" name="miGb" readonly value=${miGb} ></td>
 				  						<td><input class="tableInput" name="miGbFee" readonly value=${miGbFee} ></td>
 				  						</tr>`;
 				  						
-				  		document.getElementById("miGb").value = "";
-			  			document.getElementById("miGbFee").value = "";				
+				  			document.getElementById("miGb").value = "";
+			  				document.getElementById("miGbFee").value = "";				
 						}
+					}
 					
 					function addValidityPeriod() {
 				  		let tbody = document.getElementById("VPTableBody");
 				  		let months = document.getElementById("months").value;
 				  		let fee = document.getElementById("fee").value;
 
-				  		tbody.innerHTML += 	`<tr>
+				  		if(months != "" && fee != ""){
+				  			tbody.innerHTML += 	`<tr>
 				  						<td><input class="tableInput" name="months" readonly value=${months} ></td>
 				  						<td><input class="tableInput" name="fee" readonly value=${fee} ></td>
 				  						</tr>`;
-						}
+				  		
+				  			document.getElementById("months").value = "";
+				  			document.getElementById("fee").value = "";
+				  		}				
+					}
 		</script>
 
 	<br><br>
