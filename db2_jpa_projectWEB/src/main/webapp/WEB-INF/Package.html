@@ -34,7 +34,12 @@
 			<div>
 				<h3>Mobile Phone</h3>
 				<div th:each="mp : ${package.getMobilePhone()}">
-					<p style="white-space: pre;" th:text="${mp.toString()}"></p>
+					<p>
+						<span th:text="${mp.getMinutes() + ' Minutes'}"></span><br>
+						<span th:text="${mp.getSms() + ' SMS'}"></span><br>
+						<span>Extra minutes fee: &euro;</span><span th:text="${mp.getMinutesFee()}"></span><br>
+						<span>Extra SMS fee: &euro;</span><span th:text="${mp.getSmsFee()}"></span>
+					</p>
 				</div>
 			</div>
 		</li>
@@ -43,7 +48,10 @@
 			<div>
 				<h3>Fixed Internet</h3>
 				<div th:each="fi : ${package.getFixedInternet()}">
-					<p style="white-space: pre;" th:text="${fi.toString()}"></p>
+					<p>
+						<span th:text="${fi.getGigabytes() + ' GB'}"></span><br>
+						<span>Extra GB fee: &euro;</span><span th:text="${fi.getGigabytesFee()}"></span>
+					</p>
 				</div>
 			</div>
 		</li>
@@ -52,7 +60,10 @@
 			<div>
 				<h3>Mobile Internet</h3>
 				<div th:each="mi : ${package.getMobileInternet()}">
-					<p style="white-space: pre;" th:text="${mi.toString()}"></p>
+					<p>
+						<span th:text="${mi.getGigabytes() + ' GB'}"></span><br>
+						<span>Extra GB fee: &euro;</span><span th:text="${mi.getGigabytesFee()}"></span>
+					</p>
 				</div>
 			</div>
 		</li>
@@ -69,9 +80,8 @@
 				<h3>Optionals</h3>
 				<div th:each="o : ${package.getOptionals()}">
 					<input type="checkbox" name="optional" th:value="${o.getName()}" th:id="${o.getName()}">
-					<label th:text="${o.getName() + ': ' + o.getMonthlyFee()}"></label>
-					<span>&euro;</span>
-					<label th:text="${'/month'}" th:for="${o.getName()}"></label>
+					<!-- if the labels are not on the same line, a whitespace will be displayed between each one -->
+					<label th:text="${o.getName() + ': ' + o.getMonthlyFee()}"  th:for="${o.getName()}"></label><label th:for="${o.getName()}"> &euro;</label><label th:text="${'/month'}" th:for="${o.getName()}"></label>
 				</div>
 			</div>
 			<div class="sideBySide">

@@ -21,10 +21,18 @@ public class SalesServices {
 	}
 
 	public List<PackageSales> findAllPackagePurchase() {
-		return em.createNamedQuery("PackageSales.findAll", PackageSales.class).getResultList();
+		List<PackageSales> packageSales = em.createNamedQuery("PackageSales.findAll", PackageSales.class).getResultList();
+		for (PackageSales ps : packageSales) {
+			em.refresh(ps);
+		}
+		return packageSales;
 	}
 	
 	public List<OptionalSales> findBestSeller() {
-		return em.createNamedQuery("OptionalSales.findBestSeller", OptionalSales.class).getResultList();		
+		List<OptionalSales> optionalSales = em.createNamedQuery("OptionalSales.findBestSeller", OptionalSales.class).getResultList();
+		for (OptionalSales os : optionalSales) {
+			em.refresh(os);
+		}
+		return optionalSales;
 	}
 }

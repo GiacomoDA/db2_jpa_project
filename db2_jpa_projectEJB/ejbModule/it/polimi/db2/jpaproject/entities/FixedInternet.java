@@ -15,7 +15,7 @@ public class FixedInternet implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "package_id")
 	private ServicePackage servicePackage;
 	

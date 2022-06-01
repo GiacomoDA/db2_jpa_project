@@ -37,7 +37,7 @@
 	        <input type="number" id="sms" name="MPSMS" min="0"><br>
 	        <label>Extra SMS fee</label>
 	        <input type="number" id="extraSmsFee" name="MPSMSFee" min="0" step="0.01"><br>
-					<button type=button onclick="addMobilePhone()">Add Mobile Phone</button>
+					<button type=button onclick="addMobilePhone()">Add</button>
 	   </div>
 
 		<div class=sideBySide>
@@ -46,7 +46,7 @@
 	        <input type="number" id="fiGb" name="FIGb" min="0"><br>
 	        <label>Extra gigabytes fee</label>
 	        <input type="number" id="fiGbFee" name="FIGBFee" min="0" step="0.01"><br>
-					<button type=button onclick="addFixedInternet()">Add Fixed Internet</button>
+					<button type=button onclick="addFixedInternet()">Add</button>
 		</div>
 
 		<div class=sideBySide>
@@ -55,7 +55,7 @@
 	        <input type="number" id="miGb" name="MIGB" min="0"><br>
 	        <label>Extra gigabytes fee</label>
 	        <input type="number" id="miGbFee" name="MIGBFee" min="0" step="0.01"><br>
-					<button type=button onclick="addMobileInternet()">Add Mobile Internet</button>
+					<button type=button onclick="addMobileInternet()">Add</button>
 	   </div>
 
 		 <div>
@@ -74,24 +74,24 @@
 			</div>
 
 			 <div class=sideBySide>
-	        		<h3>Validy period</h3>
+	        		<h3>Validity period</h3>
 	        		<label>Months</label>
         			<input type="number" id="months" min="0"><br>
         			<label>Fee</label>
         			<input type="number" id="fee" min="0" step="0.01"><br>
-        			<button type=button onclick="addValidityPeriod()">Add validity period</button>
+        			<button type=button onclick="addValidityPeriod()">Add</button>
       		 </div>
     </div>
 
 		<div>
-		<h3>Added Mobile Phone(s)</h3>
+		<h3>Mobile Phone</h3>
 			<table>
 				<thead>
 					<tr>
 						<th>Minutes</th>
-						<th>Extra Min. Fee</th>
+						<th>Extra min. fee</th>
 						<th>SMS</th>
-						<th>Extra SMS Fee</th>
+						<th>Extra SMS fee</th>
 					</tr>
 				</thead>
 				<tbody id="MPTableBody">
@@ -100,12 +100,12 @@
 		</div>
 
 		<div>
-		<h3>Added Fixed Internet</h3>
+		<h3>Fixed Internet</h3>
 			<table>
 				<thead>
 					<tr>
 						<th>Gigabytes</th>
-						<th>Extra GB Fee</th>
+						<th>Extra GB fee</th>
 					</tr>
 				</thead>
 				<tbody id="FITableBody">
@@ -114,12 +114,12 @@
 		</div>
 
 		<div>
-		<h3>Added Mobile Internet</h3>
+		<h3>Mobile Internet</h3>
 			<table>
 				<thead>
 					<tr>
 						<th>Gigabytes</th>
-						<th>Extra GB Fee</th>
+						<th>Extra GB fee</th>
 					</tr>
 				</thead>
 				<tbody id="MITableBody">
@@ -128,7 +128,7 @@
 		</div>
 
 		<div>
-		<h3>Added Validity Period(s)</h3>
+		<h3>Validity Periods</h3>
 			<table>
 				<thead>
 					<tr>
@@ -150,10 +150,10 @@
 			  			let extraSmsFee = document.getElementById("extraSmsFee").value;
 
 			  			tbody.innerHTML += 	`<tr>
-			  						<td><input name="minutes" readonly value=${minutes} ></td>
-			  						<td><input name="extraMinFee" readonly value=${extraMinFee} ></td>
-			  						<td><input name="sms" readonly value=${sms} ></td>
-			  						<td><input name="extraSmsFee" readonly value=${extraSmsFee} ></td>
+			  						<td><input class="tableInput" name="minutes" readonly value=${minutes} ></td>
+			  						<td><input class="tableInput" name="extraMinFee" readonly value=${extraMinFee} ></td>
+			  						<td><input class="tableInput" name="sms" readonly value=${sms} ></td>
+			  						<td><input class="tableInput" name="extraSmsFee" readonly value=${extraSmsFee} ></td>
 			  						</tr>`;
 			  						
 			  			document.getElementById("minutes").value = "";
@@ -168,8 +168,8 @@
 				  		let fiGbFee = document.getElementById("fiGbFee").value;
 
 				  		tbody.innerHTML += 	`<tr>
-				  						<td><input name="fiGb" readonly value=${fiGb} ></td>
-				  						<td><input name="fiGbFee" readonly value=${fiGbFee} ></td>
+				  						<td><input class="tableInput" name="fiGb" readonly value=${fiGb} ></td>
+				  						<td><input class="tableInput" name="fiGbFee" readonly value=${fiGbFee} ></td>
 				  						</tr>`;
 				  						
 				  		document.getElementById("fiGb").value = "";
@@ -182,8 +182,8 @@
 				  		let miGbFee = document.getElementById("miGbFee").value;
 
 				  		tbody.innerHTML += 	`<tr>
-				  						<td><input name="miGb" readonly value=${miGb} ></td>
-				  						<td><input name="miGbFee" readonly value=${miGbFee} ></td>
+				  						<td><input class="tableInput" name="miGb" readonly value=${miGb} ></td>
+				  						<td><input class="tableInput" name="miGbFee" readonly value=${miGbFee} ></td>
 				  						</tr>`;
 				  						
 				  		document.getElementById("miGb").value = "";
@@ -196,13 +196,14 @@
 				  		let fee = document.getElementById("fee").value;
 
 				  		tbody.innerHTML += 	`<tr>
-				  						<td><input name="months" readonly value=${months} ></td>
-				  						<td><input name="fee" readonly value=${fee} ></td>
+				  						<td><input class="tableInput" name="months" readonly value=${months} ></td>
+				  						<td><input class="tableInput" name="fee" readonly value=${fee} ></td>
 				  						</tr>`;
 						}
 		</script>
 
-	<div class="right">
+	<br><br>
+	<div>
         <input type="submit" value="Confirm"><br>
 			<div class="errorMessage">
 				<p class="errorMessage" th:text="${errorMessage}"></p>
