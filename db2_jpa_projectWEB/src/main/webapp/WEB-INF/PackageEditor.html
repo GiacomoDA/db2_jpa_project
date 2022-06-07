@@ -68,7 +68,8 @@
 			 				<h3>Optionals</h3>
 				 			<div th:each="o : ${optionals}">
 					 			<input type="checkbox" name="optional" th:value="${o.getName()}" th:id="${o.getName()}">
-					 			<label th:text="${o.getName() + ': ' + o.getMonthlyFee() + '/month'}" th:for="${o.getName()}"></label>
+								<!-- if the labels are not on the same line, a whitespace will be displayed between each one -->
+								<label th:text="${o.getName() + ': ' + o.getMonthlyFee()}"  th:for="${o.getName()}"></label><label th:for="${o.getName()}"> &euro;</label><label th:text="${'/month'}" th:for="${o.getName()}"></label>
 				 			</div>
 			 		</div>
 			</div>

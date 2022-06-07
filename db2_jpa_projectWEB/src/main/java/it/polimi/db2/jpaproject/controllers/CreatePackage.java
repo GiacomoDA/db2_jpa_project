@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.DuplicateKeyException;
 import javax.ejb.EJB;
 import javax.persistence.NoResultException;
 import javax.servlet.ServletContext;
@@ -114,7 +115,7 @@ public class CreatePackage extends HttpServlet {
 				mobileInternet = mobileInternetService.newMobileInternet(mbGigabytes, mbGFee);
 			}
 			
-			//validyPeriod(s)
+			//validityPeriod(s)
 			validityMonths = Arrays.asList(Optional.ofNullable(request.getParameterValues("months")).orElse(new String[0]));
 			validityFee = Arrays.asList(Optional.ofNullable(request.getParameterValues("fee")).orElse(new String[0]));
 			if(validityMonths.isEmpty() || validityFee.isEmpty()) {
@@ -134,7 +135,12 @@ public class CreatePackage extends HttpServlet {
 			String path = getServletContext().getContextPath() + "/PackageEditor";
 			response.sendRedirect(path);
 			return;
-		}catch (Exception e) {
+		} catch (DuplicateKeyException duplicateMonth) {
+			request.getSession().setAttribute("errorMessage", "Duplicate validity period duration");
+			String path = getServletContext().getContextPath() + "/PackageEditor";
+			response.sendRedirect(path);
+			return;
+		} catch (Exception e) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or invalid values");
 			return;
 		}

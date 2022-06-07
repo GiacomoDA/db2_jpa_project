@@ -15,7 +15,7 @@ public class MobileInternetService {
 		List<MobileInternet> list = new ArrayList<MobileInternet>();
 		for(int i=0; i < gigabytes.size(); i++) {
 			Integer g = Integer.valueOf(gigabytes.get(i));
-			BigDecimal gfee = new BigDecimal(Integer.valueOf(gigabytesFee.get(i)));
+			BigDecimal gfee = new BigDecimal(gigabytesFee.get(i));
 			list.add(new MobileInternet(g, gfee));
 		}
 		return list;

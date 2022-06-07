@@ -41,7 +41,7 @@ public class ValidityPeriod implements Serializable {
 		this.servicePackage = servicePackage;
 	}
 
-	public int getMonths() {
+	public Integer getMonths() {
 		return months;
 	}
 
