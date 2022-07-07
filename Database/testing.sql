@@ -1,6 +1,6 @@
 USE `db2_jpa_project`;
 
-INSERT INTO `user`(`orderusername`,`email`,`password`,`failed_payments`)
+INSERT INTO `user`(`username`,`email`,`password`,`failed_payments`)
 	VALUES('user','email@email','password1',0);
 INSERT INTO `user`(`username`,`email`,`password`,`failed_payments`)
 	VALUES('a','a@a','a',0);
