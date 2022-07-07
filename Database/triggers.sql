@@ -78,7 +78,7 @@ BEGIN
 	IF (SELECT `accepted` FROM `order` WHERE `id` = NEW.`order_id`) = 1 THEN
 		IF EXISTS (SELECT * FROM `package_sales` WHERE `id` = `pkg_id`) THEN
 			UPDATE `package_sales`
-				SET `sales_with_optionals` = (SELECT count(DISTINCT `order_id`) FROM `order_to_optional` WHERE `order_id` IN (SELECT `id` FROM `order` WHERE `package_id` = `pkg_id` AND `accepted` = 1) AND `optional` = NEW.`optional`), `optionals_sales` = `optionals_sales` + 1
+				SET `sales_with_optionals` = (SELECT count(DISTINCT `order_id`) FROM `order_to_optional` WHERE `order_id` IN (SELECT `id` FROM `order` WHERE `package_id` = `pkg_id` AND `accepted` = 1)), `optionals_sales` = `optionals_sales` + 1
                 WHERE `id` = `pkg_id`;
 		END IF;
 	END IF;
