@@ -1,3 +1,1 @@
-<p align="center">
-  <img width="460" height="300" src="https://i.imgur.com/VmlTPOo.jpeg">
-</p>
+Databases 2 course - JPA project - AY 2021/2022
